@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 12/14/18 6:19 PM.
+ * This file is part of ProDisFuzz, modified on 12/14/18 6:30 PM.
  * Copyright (c) 2013-2018 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -71,8 +71,9 @@ public class HelpMenu {
      * Prints a given error message for a given subcommand to the standard output stream. Additionally a usage block is
      * printed that lists all of the subcommand's possible parameters.
      *
-     * @param command the command
-     * @param error   the error message
+     * @param command        the subcommnd's parent command
+     * @param subcommandName the subcommand's name
+     * @param error          the error message
      */
     public static void print(Command command, String subcommandName, String error) {
         printError(error);
