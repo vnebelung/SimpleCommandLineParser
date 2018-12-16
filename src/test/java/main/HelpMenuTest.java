@@ -1,25 +1,20 @@
 /*
- * This file is part of ProDisFuzz, modified on 12/14/18 6:19 PM.
+ * This file is part of ProDisFuzz, modified on 12/16/18 1:57 PM.
  * Copyright (c) 2013-2018 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
  */
 
-package menu;
+package main;
 
 import commands.Command;
 import commands.Subcommand;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import parameters.BooleanParameter;
 import parameters.IntegerParameter;
 import parameters.StringParameter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,23 +23,8 @@ import static org.testng.Assert.assertEquals;
 
 public class HelpMenuTest {
 
-    private ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    private PrintStream old = System.out;
-
-    @BeforeMethod
-    public void setUp() {
-        byteArrayOutputStream.reset();
-        PrintStream printStream = new PrintStream(byteArrayOutputStream);
-        System.setOut(printStream);
-    }
-
-    @AfterMethod
-    public void tearDown() {
-        System.setOut(old);
-    }
-
     @Test
-    public void testPrint() {
+    public void testPrintUsage() {
         Command command = new Command("commandname",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
@@ -69,10 +49,7 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet."));
-
-        HelpMenu.print(command, "texterror");
-        List<String> actual =
-                byteArrayOutputStream.toString(StandardCharsets.UTF_8).lines().collect(Collectors.toList());
+        HelpMenu helpMenu = new HelpMenu(command);
 
         List<String> reference = new LinkedList<>();
         reference.add("Error: texterror");
@@ -110,11 +87,11 @@ public class HelpMenuTest {
         reference.add("                et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus");
         reference.add("                est Lorem ipsum dolor sit amet.");
 
-        assertEquals(actual, reference);
+        assertEquals(helpMenu.printUsage("texterror").lines().collect(Collectors.toList()), reference);
     }
 
     @Test
-    public void testPrint1() {
+    public void testPrintUsage1() {
         Command command = new Command("commandname",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
@@ -173,10 +150,7 @@ public class HelpMenuTest {
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet."));
         command.add(subcommand2);
-
-        HelpMenu.print(command, "subcommand1", "texterror");
-        List<String> actual =
-                byteArrayOutputStream.toString(StandardCharsets.UTF_8).lines().collect(Collectors.toList());
+        HelpMenu helpMenu = new HelpMenu(command);
 
         List<String> reference = new LinkedList<>();
         reference.add("Error: texterror");
@@ -214,11 +188,11 @@ public class HelpMenuTest {
         reference.add("                et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus");
         reference.add("                est Lorem ipsum dolor sit amet.");
 
-        assertEquals(actual, reference);
+        assertEquals(helpMenu.printUsage("subcommand1", "texterror").lines().collect(Collectors.toList()), reference);
     }
 
     @Test
-    public void testPrint2() {
+    public void testPrintUsage2() {
         Command command = new Command("commandname",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
@@ -227,10 +201,108 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet.");
+        Subcommand subcommand1 = new Subcommand("subcommand1",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
+                        "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
+                        " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
+                        "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
+                        "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
+                        "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
+                        "sanctus est Lorem ipsum dolor sit amet.");
+        subcommand1.add(new StringParameter("parameter3",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
+                        "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
+                        " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
+                        "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
+                        "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
+                        "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
+                        "sanctus est Lorem ipsum dolor sit amet.", "text"));
+        subcommand1.add(new BooleanParameter("param4",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
+                        "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
+                        " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
+                        "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
+                        "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
+                        "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
+                        "sanctus est Lorem ipsum dolor sit amet."));
+        command.add(subcommand1);
+        Subcommand subcommand2 = new Subcommand("subcommand2",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
+                        "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
+                        " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
+                        "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
+                        "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
+                        "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
+                        "sanctus est Lorem ipsum dolor sit amet.");
+        subcommand2.add(new IntegerParameter("parameter5",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
+                        "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
+                        " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
+                        "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
+                        "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
+                        "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
+                        "sanctus est Lorem ipsum dolor sit amet.", 5));
+        subcommand2.add(new StringParameter("param6",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
+                        "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
+                        " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
+                        "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
+                        "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
+                        "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
+                        "sanctus est Lorem ipsum dolor sit amet."));
+        command.add(subcommand2);
+        HelpMenu helpMenu = new HelpMenu(command);
 
-        HelpMenu.print(command, "texterror");
-        List<String> actual =
-                byteArrayOutputStream.toString(StandardCharsets.UTF_8).lines().collect(Collectors.toList());
+        List<String> reference = new LinkedList<>();
+        reference.add("Error: texterror");
+        reference.add("");
+        reference.add("Usage: commandname <subcommand> [<args>]");
+        reference.add("");
+        reference.add("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod");
+        reference.add("tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At");
+        reference.add("vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,");
+        reference.add("no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit");
+        reference.add("amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut");
+        reference.add("labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam");
+        reference.add("et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata");
+        reference.add("sanctus est Lorem ipsum dolor sit amet.");
+        reference.add("");
+        reference.add("Subcommands:");
+        reference.add("  subcommand1  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam");
+        reference.add("               nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam");
+        reference.add("               erat, sed diam voluptua. At vero eos et accusam et justo duo");
+        reference.add("               dolores et ea rebum. Stet clita kasd gubergren, no sea takimata");
+        reference.add("               sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit");
+        reference.add("               amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor");
+        reference.add("               invidunt ut labore et dolore magna aliquyam erat, sed diam");
+        reference.add("               voluptua. At vero eos et accusam et justo duo dolores et ea");
+        reference.add("               rebum. Stet clita kasd gubergren, no sea takimata sanctus est");
+        reference.add("               Lorem ipsum dolor sit amet.");
+        reference.add("  subcommand2  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam");
+        reference.add("               nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam");
+        reference.add("               erat, sed diam voluptua. At vero eos et accusam et justo duo");
+        reference.add("               dolores et ea rebum. Stet clita kasd gubergren, no sea takimata");
+        reference.add("               sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit");
+        reference.add("               amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor");
+        reference.add("               invidunt ut labore et dolore magna aliquyam erat, sed diam");
+        reference.add("               voluptua. At vero eos et accusam et justo duo dolores et ea");
+        reference.add("               rebum. Stet clita kasd gubergren, no sea takimata sanctus est");
+        reference.add("               Lorem ipsum dolor sit amet.");
+
+        assertEquals(helpMenu.printUsage("texterror").lines().collect(Collectors.toList()), reference);
+    }
+
+    @Test
+    public void testPrintUsage3() {
+        Command command = new Command("commandname",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
+                        "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
+                        " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
+                        "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
+                        "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
+                        "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
+                        "sanctus est Lorem ipsum dolor sit amet.");
+        HelpMenu helpMenu = new HelpMenu(command);
 
         List<String> reference = new LinkedList<>();
         reference.add("Error: texterror");
@@ -246,7 +318,7 @@ public class HelpMenuTest {
         reference.add("et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata");
         reference.add("sanctus est Lorem ipsum dolor sit amet.");
 
-        assertEquals(actual, reference);
+        assertEquals(helpMenu.printUsage("texterror").lines().collect(Collectors.toList()), reference);
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 12/14/18 6:19 PM.
+ * This file is part of ProDisFuzz, modified on 12/16/18 12:19 PM.
  * Copyright (c) 2013-2018 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -10,7 +10,6 @@ package main;
 
 import commands.Command;
 import commands.Subcommand;
-import menu.HelpMenu;
 import parameters.Parameter;
 
 import java.util.Arrays;
@@ -25,10 +24,11 @@ import java.util.stream.Collectors;
  * command line call. The format of this string is as follows: COMMAND SUBCOMMAND --key1 value1 --key2 value2 ...
  */
 @SuppressWarnings("WeakerAccess")
-public class CommandLineParser {
+public class CommandLine {
 
     private final static Pattern PARAMETER_FORMAT = Pattern.compile("--.+=.+");
     private Command command;
+    private HelpMenu helpMenu;
 
     /**
      * Creates a command with a given name and description.
@@ -38,6 +38,7 @@ public class CommandLineParser {
      */
     public void createCommand(String name, String description) {
         command = new Command(name, description);
+        helpMenu = new HelpMenu(command);
     }
 
     /**
@@ -50,11 +51,22 @@ public class CommandLineParser {
     }
 
     /**
+     * Prints formatted usage information into the output string. This only works if the command is already specified.
+     *
+     * @return the usage help
+     */
+    public String printHelp() {
+        return helpMenu.printUsage();
+    }
+
+    /**
      * Parses a given command line. If no errors occur during the parsing, the parsed arguments will be accessible under
      * the command of this command line parser. Otherwise an exception is thrown.
      *
      * @param args the user-provided arguments
-     * @throws ParameterException if the command line arguments could not be parsed successfully
+     * @throws ParameterException if the command line arguments could not be parsed successfully, The exception's
+     *                            message contains the formatted error and usage guidance according to the error's
+     *                            nature.
      */
     public void parse(String... args) throws ParameterException {
         List<String> arguments = new LinkedList<>(Arrays.asList(args));
@@ -66,8 +78,7 @@ public class CommandLineParser {
                 parseSubcommand(arguments,
                         command.getSubcommands().stream().map(Subcommand::getName).collect(Collectors.toSet()));
             } catch (ParameterException e) {
-                HelpMenu.print(command, e.getMessage());
-                throw e;
+                throw new ParameterException(helpMenu.printUsage(e.getMessage()));
             }
             // Now we know that a valid subcommand is at args[0]
             String subcommandName = arguments.remove(0);
@@ -76,16 +87,14 @@ public class CommandLineParser {
                 // Parse all parameters of the subcommand
                 parseParameters(arguments, command.getSubcommand(subcommandName).getParameters());
             } catch (ParameterException e) {
-                HelpMenu.print(command, subcommandName, e.getMessage());
-                throw e;
+                throw new ParameterException(helpMenu.printUsage(subcommandName, e.getMessage()));
             }
 
             // Check if all parameters have their values set
             for (Parameter parameter : command.getSubcommand(subcommandName).getParameters()) {
                 if (parameter.getValue() == null) {
                     String error = "Parameter '" + parameter.getName() + "' is missing";
-                    HelpMenu.print(command, subcommandName, error);
-                    throw new ParameterException(error);
+                    throw new ParameterException(helpMenu.printUsage(subcommandName, error));
                 }
             }
         } else {
@@ -93,20 +102,17 @@ public class CommandLineParser {
                 // Parse all parameters of the command
                 parseParameters(arguments, command.getParameters());
             } catch (ParameterException e) {
-                HelpMenu.print(command, e.getMessage());
-                throw e;
+                throw new ParameterException(helpMenu.printUsage(e.getMessage()));
             }
 
             // Check if all parameters have their values set
             for (Parameter parameter : command.getParameters()) {
                 if (parameter.getValue() == null) {
                     String error = "Parameter '" + parameter.getName() + "' is missing";
-                    HelpMenu.print(command, error);
-                    throw new ParameterException(error);
+                    throw new ParameterException(helpMenu.printUsage(error));
                 }
             }
         }
-
 
     }
 
