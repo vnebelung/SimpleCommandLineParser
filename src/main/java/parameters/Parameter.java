@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 12/14/18 6:30 PM.
+ * This file is part of ProDisFuzz, modified on 12/21/18 6:01 PM.
  * Copyright (c) 2013-2018 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -52,4 +52,11 @@ public interface Parameter<T> {
      */
     String getName();
 
+    /**
+     * Returns a plain copy of this parameter, that means a newly instantiated parameter with the same name,
+     * description, and value.
+     *
+     * @return the copied parameter
+     */
+    Parameter<T> copy();
 }

@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 12/14/18 6:19 PM.
+ * This file is part of ProDisFuzz, modified on 12/21/18 6:01 PM.
  * Copyright (c) 2013-2018 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -43,4 +43,11 @@ public class StringParameter extends AbstractParameter<String> {
         }
         setInternalValue(value);
     }
+
+    @Override
+    public Parameter<String> copy() {
+        return getValue() == null ? new StringParameter(getName(), getDescription()) :
+                new StringParameter(getName(), getDescription(), getValue());
+    }
+
 }

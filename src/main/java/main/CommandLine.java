@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 12/16/18 12:19 PM.
+ * This file is part of ProDisFuzz, modified on 12/22/18 1:34 AM.
  * Copyright (c) 2013-2018 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -15,7 +15,6 @@ import parameters.Parameter;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -61,51 +60,61 @@ public class CommandLine {
 
     /**
      * Parses a given command line. If no errors occur during the parsing, the parsed arguments will be accessible under
-     * the command of this command line parser. Otherwise an exception is thrown.
+     * the returned command. Otherwise an exception is thrown.
      *
      * @param args the user-provided arguments
+     * @return the parsed parameters and subcommands
      * @throws ParameterException if the command line arguments could not be parsed successfully, The exception's
      *                            message contains the formatted error and usage guidance according to the error's
      *                            nature.
      */
-    public void parse(String... args) throws ParameterException {
+    public Command parse(String... args) throws ParameterException {
+        Command result = new Command(command.getName(), "");
         List<String> arguments = new LinkedList<>(Arrays.asList(args));
 
         // If a subcommand must be present, check for its existence
         if (command.getSubcommands().size() > 0) {
 
             try {
-                parseSubcommand(arguments,
-                        command.getSubcommands().stream().map(Subcommand::getName).collect(Collectors.toSet()));
+                parseSubcommand(arguments, result);
             } catch (ParameterException e) {
                 throw new ParameterException(helpMenu.printUsage(e.getMessage()));
             }
-            // Now we know that a valid subcommand is at args[0]
-            String subcommandName = arguments.remove(0);
+
+            // Copy all must-have and should-have parameters to the resulting subcommand
+            Subcommand subcommand = result.getSubcommands().iterator().next();
+            command.getSubcommand(subcommand.getName()).getParameters().forEach(p -> subcommand.add(p.copy()));
 
             try {
                 // Parse all parameters of the subcommand
-                parseParameters(arguments, command.getSubcommand(subcommandName).getParameters());
+                parseParameters(arguments, subcommand);
             } catch (ParameterException e) {
-                throw new ParameterException(helpMenu.printUsage(subcommandName, e.getMessage()));
+                throw new ParameterException(helpMenu.printUsage(subcommand.getName(), e.getMessage()));
             }
 
-            // Check if all parameters have their values set
-            for (Parameter parameter : command.getSubcommand(subcommandName).getParameters()) {
+            // Check if all parameters have values not null. A null value means that a mandatory parameter was not
+            // being set via the command line parameters
+            for (Parameter parameter : subcommand.getParameters()) {
                 if (parameter.getValue() == null) {
                     String error = "Parameter '" + parameter.getName() + "' is missing";
-                    throw new ParameterException(helpMenu.printUsage(subcommandName, error));
+                    throw new ParameterException(helpMenu.printUsage(subcommand.getName(), error));
                 }
             }
+
         } else {
+
+            // Copy all must-have and should-have parameters to the resulting command
+            command.getParameters().forEach(p -> result.add(p.copy()));
+
             try {
                 // Parse all parameters of the command
-                parseParameters(arguments, command.getParameters());
+                parseParameters(arguments, command);
             } catch (ParameterException e) {
                 throw new ParameterException(helpMenu.printUsage(e.getMessage()));
             }
 
-            // Check if all parameters have their values set
+            // Check if all parameters have values not null. A null value means that a mandatory parameter was not
+            // being set via the command line parameters
             for (Parameter parameter : command.getParameters()) {
                 if (parameter.getValue() == null) {
                     String error = "Parameter '" + parameter.getName() + "' is missing";
@@ -114,46 +123,51 @@ public class CommandLine {
             }
         }
 
+        return result;
     }
 
     /**
      * Parses the parameters of the command line arguments. A parameter must have a "--key=value" structure. If either
      * the argument format is invalid, an argument contains an unknown parameter name, or an argument's value cannot be
-     * parsed to the predefined parameter type, an exception is thrown.
+     * parsed to the predefined parameter type, an exception is thrown. The parameters will be added to the given parent
+     * subcommand.
      *
-     * @param arguments  the user-provided command line arguments
-     * @param parameters the predefined parameters
+     * @param arguments the user-provided command line arguments
+     * @param parent    the subcommand to which the parsed parameters will be added
      * @throws ParameterException if an arguments contain an unknown parameter name, an argument format is invalid, or a
      *                            argument's value cannot be parsed into the parameter's type
      */
-    private void parseParameters(List<String> arguments, Set<Parameter> parameters) throws ParameterException {
+    private void parseParameters(List<String> arguments, Subcommand parent) throws ParameterException {
         for (String argument : arguments) {
             if (!PARAMETER_FORMAT.matcher(argument).matches()) {
                 throw new ParameterException("Parameter '" + argument + "' has no valid --key=value structure");
             }
             String key = argument.substring(2, argument.indexOf('='));
             String value = argument.substring(argument.indexOf('=') + 1);
-            parameters.stream().filter(p -> p.getName().equals(key)).findFirst()
-                    .orElseThrow(() -> new ParameterException("Unknown parameter '" + key + "'")).setValue(value);
+            Parameter parameter = parent.getParameters().stream().filter(p -> p.getName().equals(key)).findFirst()
+                    .orElseThrow(() -> new ParameterException("Unknown parameter '" + key + "'"));
+            parameter.setValue(value);
         }
     }
 
     /**
-     * Parses the subcommand of the command line arguments. If existent at all, the subcommand must be at index 0 of the
-     * given arguments. If either the given arguments are empty or the first argument does not contain any of the
-     * predefined given subcommands, an exception is thrown.
+     * Parses the subcommand of the command line arguments. The subcommand must be at index 0 of the given arguments. If
+     * either the given arguments are empty or the first argument does not contain any of the predefined given
+     * subcommands, an exception is thrown. The subcommand will be added to the given parent command.
      *
-     * @param arguments       the user-provided command line arguments
-     * @param subcommandNames the predefined subcommand names
-     * @throws ParameterException if the arguments do not contain a subcommand at the first index
+     * @param arguments the user-provided command line arguments
+     * @param parent    the command to which the parsed subcommand will be added
+     * @throws ParameterException if the given arguments do not contain a subcommand at the first index
      */
-    private void parseSubcommand(List<String> arguments, Set<String> subcommandNames) throws ParameterException {
+    private void parseSubcommand(List<String> arguments, Command parent) throws ParameterException {
         if (arguments.isEmpty()) {
             throw new ParameterException("No subcommand found");
         }
-        if (!subcommandNames.contains(arguments.get(0))) {
+        if (!command.getSubcommands().stream().map(Subcommand::getName).collect(Collectors.toSet())
+                .contains(arguments.get(0))) {
             throw new ParameterException("Unknown subcommand '" + arguments.get(0) + "'");
         }
+        parent.add(command.getSubcommand(arguments.remove(0)).copy());
     }
 
 }

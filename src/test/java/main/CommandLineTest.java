@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 12/16/18 2:24 PM.
+ * This file is part of ProDisFuzz, modified on 12/22/18 1:47 AM.
  * Copyright (c) 2013-2018 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -8,6 +8,7 @@
 
 package main;
 
+import commands.Command;
 import commands.Subcommand;
 import org.testng.annotations.Test;
 import parameters.BooleanParameter;
@@ -53,7 +54,13 @@ public class CommandLineTest {
         subcommand1.add(new IntegerParameter("parameter2", "description"));
         commandLine.getCommand().add(subcommand1);
 
-        commandLine.parse("subcommand1", "--parameter1=string", "--parameter2=6");
+        Command command = commandLine.parse("subcommand1", "--parameter1=string", "--parameter2=6");
+        assertEquals(command.getName(), "command");
+        assertEquals(command.getSubcommands().size(), 1);
+        assertEquals(command.getSubcommands().iterator().next().getName(), "subcommand1");
+        assertEquals(command.getSubcommand("subcommand1").getParameters().size(), 2);
+        assertEquals(command.getSubcommand("subcommand1").getParameter("parameter1").getValue(), "string");
+        assertEquals(command.getSubcommand("subcommand1").getParameter("parameter2").getValue(), 6);
     }
 
     @Test
@@ -65,7 +72,13 @@ public class CommandLineTest {
         subcommand1.add(new IntegerParameter("parameter2", "description"));
         commandLine.getCommand().add(subcommand1);
 
-        commandLine.parse("subcommand1", "--parameter2=6");
+        Command command = commandLine.parse("subcommand1", "--parameter2=6");
+        assertEquals(command.getName(), "command");
+        assertEquals(command.getSubcommands().size(), 1);
+        assertEquals(command.getSubcommands().iterator().next().getName(), "subcommand1");
+        assertEquals(command.getSubcommand("subcommand1").getParameters().size(), 2);
+        assertEquals(command.getSubcommand("subcommand1").getParameter("parameter1").getValue(), "dummy");
+        assertEquals(command.getSubcommand("subcommand1").getParameter("parameter2").getValue(), 6);
     }
 
     @Test(expectedExceptions = ParameterException.class)
@@ -291,4 +304,7 @@ public class CommandLineTest {
         assertEquals(commandLine.printHelp().lines().collect(Collectors.toList()), reference);
     }
 
+    @Test
+    public void testParse13() {
+    }
 }
