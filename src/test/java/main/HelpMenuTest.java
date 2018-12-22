@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 12/16/18 1:57 PM.
+ * This file is part of ProDisFuzz, modified on 12/22/18 9:26 PM.
  * Copyright (c) 2013-2018 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -76,16 +76,17 @@ public class HelpMenuTest {
         reference.add("                sed diam voluptua. At vero eos et accusam et justo duo dolores");
         reference.add("                et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus");
         reference.add("                est Lorem ipsum dolor sit amet.");
-        reference.add("  --parameter1  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed");
-        reference.add("                diam nonumy eirmod tempor invidunt ut labore et dolore magna");
+        reference.add("  --parameter1  (Optional) Lorem ipsum dolor sit amet, consetetur sadipscing");
+        reference.add("                elitr, sed diam nonumy eirmod tempor invidunt ut labore et");
+        reference.add("                dolore magna aliquyam erat, sed diam voluptua. At vero eos et");
+        reference.add("                accusam et justo duo dolores et ea rebum. Stet clita kasd");
+        reference.add("                gubergren, no sea takimata sanctus est Lorem ipsum dolor sit");
+        reference.add("                amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr,");
+        reference.add("                sed diam nonumy eirmod tempor invidunt ut labore et dolore magna");
         reference.add("                aliquyam erat, sed diam voluptua. At vero eos et accusam et");
         reference.add("                justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea");
-        reference.add("                takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum");
-        reference.add("                dolor sit amet, consetetur sadipscing elitr, sed diam nonumy");
-        reference.add("                eirmod tempor invidunt ut labore et dolore magna aliquyam erat,");
-        reference.add("                sed diam voluptua. At vero eos et accusam et justo duo dolores");
-        reference.add("                et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus");
-        reference.add("                est Lorem ipsum dolor sit amet.");
+        reference.add("                takimata sanctus est Lorem ipsum dolor sit amet. The default");
+        reference.add("                value is 'true'.");
 
         assertEquals(helpMenu.printUsage("texterror").lines().collect(Collectors.toList()), reference);
     }
@@ -177,16 +178,17 @@ public class HelpMenuTest {
         reference.add("                sed diam voluptua. At vero eos et accusam et justo duo dolores");
         reference.add("                et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus");
         reference.add("                est Lorem ipsum dolor sit amet.");
-        reference.add("  --parameter3  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed");
-        reference.add("                diam nonumy eirmod tempor invidunt ut labore et dolore magna");
+        reference.add("  --parameter3  (Optional) Lorem ipsum dolor sit amet, consetetur sadipscing");
+        reference.add("                elitr, sed diam nonumy eirmod tempor invidunt ut labore et");
+        reference.add("                dolore magna aliquyam erat, sed diam voluptua. At vero eos et");
+        reference.add("                accusam et justo duo dolores et ea rebum. Stet clita kasd");
+        reference.add("                gubergren, no sea takimata sanctus est Lorem ipsum dolor sit");
+        reference.add("                amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr,");
+        reference.add("                sed diam nonumy eirmod tempor invidunt ut labore et dolore magna");
         reference.add("                aliquyam erat, sed diam voluptua. At vero eos et accusam et");
         reference.add("                justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea");
-        reference.add("                takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum");
-        reference.add("                dolor sit amet, consetetur sadipscing elitr, sed diam nonumy");
-        reference.add("                eirmod tempor invidunt ut labore et dolore magna aliquyam erat,");
-        reference.add("                sed diam voluptua. At vero eos et accusam et justo duo dolores");
-        reference.add("                et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus");
-        reference.add("                est Lorem ipsum dolor sit amet.");
+        reference.add("                takimata sanctus est Lorem ipsum dolor sit amet. The default");
+        reference.add("                value is 'text'.");
 
         assertEquals(helpMenu.printUsage("subcommand1", "texterror").lines().collect(Collectors.toList()), reference);
     }
