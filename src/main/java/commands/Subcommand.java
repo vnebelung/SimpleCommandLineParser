@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 12/22/18 1:55 AM.
+ * This file is part of ProDisFuzz, modified on 12/28/18 9:12 PM.
  * Copyright (c) 2013-2018 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -18,7 +18,7 @@ import java.util.*;
  */
 public class Subcommand {
 
-    private Map<String, Parameter> parameters = new TreeMap<>();
+    private Map<String, Parameter<?>> parameters = new TreeMap<>();
     private String description;
     private String name;
 
@@ -38,7 +38,7 @@ public class Subcommand {
      *
      * @param parameter the parameter to be added
      */
-    public void add(Parameter parameter) {
+    public void add(Parameter<?> parameter) {
         if (parameter == null) {
             throw new IllegalArgumentException("Parameter must not be null");
         }
@@ -59,8 +59,8 @@ public class Subcommand {
      *
      * @return the parameters of this subcommand
      */
-    public Set<Parameter> getParameters() {
-        Set<Parameter> result = new TreeSet<>(Comparator.comparing(Parameter::getName));
+    public Set<Parameter<?>> getParameters() {
+        Set<Parameter<?>> result = new TreeSet<>(Comparator.comparing(Parameter::getName));
         result.addAll(parameters.values());
         return result;
     }
@@ -71,7 +71,7 @@ public class Subcommand {
      * @param name the parameter's name
      * @return the parameter with the given name or null if no parameter is found
      */
-    public Parameter getParameter(String name) {
+    public Parameter<?> getParameter(String name) {
         return parameters.get(name);
     }
 

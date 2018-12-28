@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 12/22/18 9:18 PM.
+ * This file is part of ProDisFuzz, modified on 12/28/18 9:12 PM.
  * Copyright (c) 2013-2018 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -178,7 +178,7 @@ class HelpMenu {
      * @param parameters the parameters
      * @return the parameter block
      */
-    private String printParameters(Set<Parameter> parameters) {
+    private String printParameters(Set<Parameter<?>> parameters) {
         StringBuilder result = new StringBuilder();
         result.append("Options:").append(System.lineSeparator());
 
