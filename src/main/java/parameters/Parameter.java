@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 12/28/18 9:21 PM.
- * Copyright (c) 2013-2018 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 2/17/19 11:16 PM.
+ * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -23,8 +23,7 @@ public interface Parameter<T> {
     String getDescription();
 
     /**
-     * Returns the value of the parameter. Although the value is returned as an object, the value can be cast without
-     * problems to the class used in this parameter's constructor.
+     * Returns the value of the parameter.
      *
      * @return the parameter's value
      */

@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 12/28/18 9:12 PM.
- * Copyright (c) 2013-2018 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 2/19/19 10:06 PM.
+ * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -8,7 +8,10 @@
 
 package commands;
 
+import parameters.BooleanParameter;
+import parameters.IntegerParameter;
 import parameters.Parameter;
+import parameters.StringParameter;
 
 import java.util.*;
 
@@ -18,7 +21,9 @@ import java.util.*;
  */
 public class Subcommand {
 
-    private Map<String, Parameter<?>> parameters = new TreeMap<>();
+    Map<String, Parameter<Integer>> namesToIntegerParameters = new TreeMap<>();
+    Map<String, Parameter<String>> namesToStringParameters = new TreeMap<>();
+    Map<String, Parameter<Boolean>> namesToBooleanParameters = new TreeMap<>();
     private String description;
     private String name;
 
@@ -34,15 +39,45 @@ public class Subcommand {
     }
 
     /**
-     * Adds a parameter to this subcommand.
+     * Adds a boolean parameter to this subcommand.
      *
      * @param parameter the parameter to be added
      */
-    public void add(Parameter<?> parameter) {
+    public void add(BooleanParameter parameter) {
         if (parameter == null) {
             throw new IllegalArgumentException("Parameter must not be null");
         }
-        parameters.put(parameter.getName(), parameter);
+        namesToIntegerParameters.remove(parameter.getName());
+        namesToStringParameters.remove(parameter.getName());
+        namesToBooleanParameters.put(parameter.getName(), parameter);
+    }
+
+    /**
+     * Adds a string parameter to this subcommand.
+     *
+     * @param parameter the parameter to be added
+     */
+    public void add(StringParameter parameter) {
+        if (parameter == null) {
+            throw new IllegalArgumentException("Parameter must not be null");
+        }
+        namesToIntegerParameters.remove(parameter.getName());
+        namesToBooleanParameters.remove(parameter.getName());
+        namesToStringParameters.put(parameter.getName(), parameter);
+    }
+
+    /**
+     * Adds an integer parameter to this subcommand.
+     *
+     * @param parameter the parameter to be added
+     */
+    public void add(IntegerParameter parameter) {
+        if (parameter == null) {
+            throw new IllegalArgumentException("Parameter must not be null");
+        }
+        namesToBooleanParameters.remove(parameter.getName());
+        namesToStringParameters.remove(parameter.getName());
+        namesToIntegerParameters.put(parameter.getName(), parameter);
     }
 
     /**
@@ -61,18 +96,40 @@ public class Subcommand {
      */
     public Set<Parameter<?>> getParameters() {
         Set<Parameter<?>> result = new TreeSet<>(Comparator.comparing(Parameter::getName));
-        result.addAll(parameters.values());
+        result.addAll(namesToIntegerParameters.values());
+        result.addAll(namesToStringParameters.values());
+        result.addAll(namesToBooleanParameters.values());
         return result;
     }
 
     /**
-     * Returns the parameter with the given name.
+     * Returns the integer parameter with the given name.
      *
      * @param name the parameter's name
-     * @return the parameter with the given name or null if no parameter is found
+     * @return the integer parameter with the given name or null if no integer parameter is found
      */
-    public Parameter<?> getParameter(String name) {
-        return parameters.get(name);
+    public Parameter<Integer> getIntegerParameter(String name) {
+        return namesToIntegerParameters.get(name);
+    }
+
+    /**
+     * Returns the boolean parameter with the given name.
+     *
+     * @param name the parameter's name
+     * @return the boolean parameter with the given name or null if no boolean parameter is found
+     */
+    public Parameter<Boolean> getBooleanParameter(String name) {
+        return namesToBooleanParameters.get(name);
+    }
+
+    /**
+     * Returns the string parameter with the given name.
+     *
+     * @param name the parameter's name
+     * @return the string parameter with the given name or null if no string parameter is found
+     */
+    public Parameter<String> getStringParameter(String name) {
+        return namesToStringParameters.get(name);
     }
 
     /**
@@ -85,12 +142,22 @@ public class Subcommand {
     }
 
     /**
-     * Returns a plain copy of this sucommand, that means a newly instantiated subcommand with a name and a
-     * description.
+     * Returns a deep copy of this subcommand, that means a newly instantiated subcommand with a name and a
+     * description, including all of it's parameters.
      *
      * @return the copied subcommand
      */
     public Subcommand copy() {
-        return new Subcommand(name, description);
+        Subcommand result = new Subcommand(name, description);
+        for (Map.Entry<String, Parameter<Boolean>> nameToParameter : namesToBooleanParameters.entrySet()) {
+            result.namesToBooleanParameters.put(nameToParameter.getKey(), nameToParameter.getValue().copy());
+        }
+        for (Map.Entry<String, Parameter<String>> nameToParameter : namesToStringParameters.entrySet()) {
+            result.namesToStringParameters.put(nameToParameter.getKey(), nameToParameter.getValue().copy());
+        }
+        for (Map.Entry<String, Parameter<Integer>> nameToParameter : namesToIntegerParameters.entrySet()) {
+            result.namesToIntegerParameters.put(nameToParameter.getKey(), nameToParameter.getValue().copy());
+        }
+        return result;
     }
 }

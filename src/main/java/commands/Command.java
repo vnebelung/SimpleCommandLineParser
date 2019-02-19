@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 12/14/18 6:19 PM.
- * Copyright (c) 2013-2018 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 2/19/19 10:04 PM.
+ * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -8,7 +8,10 @@
 
 package commands;
 
+import parameters.BooleanParameter;
+import parameters.IntegerParameter;
 import parameters.Parameter;
+import parameters.StringParameter;
 
 import java.util.*;
 
@@ -47,13 +50,41 @@ public class Command extends Subcommand {
     }
 
     /**
-     * Adds a parameter to this subcommand. Because a command can have either a subcommand or parameters, this command
-     * loses all of its subcommands by invoking this method.
+     * Adds a boolean parameter to this command. Because a command can have either a subcommand or parameters, an
+     * exception is thrown if this command has a subcommand.
      *
      * @param parameter the parameter to be added
      */
     @Override
-    public void add(Parameter parameter) {
+    public void add(BooleanParameter parameter) {
+        if (!subcommands.isEmpty()) {
+            throw new IllegalStateException("Parameter cannot be added because this command already has subcommands");
+        }
+        super.add(parameter);
+    }
+
+    /**
+     * Adds a string parameter to this command. Because a command can have either a subcommand or parameters, an
+     * exception is thrown if this command has a subcommand.
+     *
+     * @param parameter the parameter to be added
+     */
+    @Override
+    public void add(StringParameter parameter) {
+        if (!subcommands.isEmpty()) {
+            throw new IllegalStateException("Parameter cannot be added because this command already has subcommands");
+        }
+        super.add(parameter);
+    }
+
+    /**
+     * Adds an integer parameter to this command. Because a command can have either a subcommand or parameters, an
+     * exception is thrown if this command has a subcommand.
+     *
+     * @param parameter the parameter to be added
+     */
+    @Override
+    public void add(IntegerParameter parameter) {
         if (!subcommands.isEmpty()) {
             throw new IllegalStateException("Parameter cannot be added because this command already has subcommands");
         }
@@ -81,4 +112,23 @@ public class Command extends Subcommand {
         return subcommands.get(name);
     }
 
+    /**
+     * Returns a deep copy of this command, that means a newly instantiated command with a name and a description,
+     * including all of it's parameters.
+     *
+     * @return the copied subcommand
+     */
+    public Command copy() {
+        Command result = new Command(getName(), getDescription());
+        for (Map.Entry<String, Parameter<Boolean>> nameToParameter : namesToBooleanParameters.entrySet()) {
+            result.namesToBooleanParameters.put(nameToParameter.getKey(), nameToParameter.getValue().copy());
+        }
+        for (Map.Entry<String, Parameter<String>> nameToParameter : namesToStringParameters.entrySet()) {
+            result.namesToStringParameters.put(nameToParameter.getKey(), nameToParameter.getValue().copy());
+        }
+        for (Map.Entry<String, Parameter<Integer>> nameToParameter : namesToIntegerParameters.entrySet()) {
+            result.namesToIntegerParameters.put(nameToParameter.getKey(), nameToParameter.getValue().copy());
+        }
+        return result;
+    }
 }

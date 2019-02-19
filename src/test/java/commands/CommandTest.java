@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 12/14/18 6:19 PM.
- * Copyright (c) 2013-2018 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 2/17/19 11:38 PM.
+ * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -82,6 +82,18 @@ public class CommandTest {
         Command command = new Command("", "");
         command.add(new Subcommand("testname", ""));
         assertNotNull(command.getSubcommand("testname"));
+    }
+
+    @Test
+    public void testCopy() {
+        Command command = new Command("testname", "testdescription");
+        command.add(new StringParameter("paramname", "paramdescription", "paramvalue"));
+        Command copy = command.copy();
+        assertEquals(copy.getName(), "testname");
+        assertEquals(copy.getDescription(), "testdescription");
+        assertEquals(copy.getParameters().size(), 1);
+        assertEquals(copy.getStringParameter("paramname").getDescription(), "paramdescription");
+        assertEquals(copy.getStringParameter("paramname").getValue(), "paramvalue");
     }
 
 }

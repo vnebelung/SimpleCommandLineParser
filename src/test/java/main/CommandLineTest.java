@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 12/22/18 1:47 AM.
- * Copyright (c) 2013-2018 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 2/19/19 10:35 PM.
+ * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -59,8 +59,8 @@ public class CommandLineTest {
         assertEquals(command.getSubcommands().size(), 1);
         assertEquals(command.getSubcommands().iterator().next().getName(), "subcommand1");
         assertEquals(command.getSubcommand("subcommand1").getParameters().size(), 2);
-        assertEquals(command.getSubcommand("subcommand1").getParameter("parameter1").getValue(), "string");
-        assertEquals(command.getSubcommand("subcommand1").getParameter("parameter2").getValue(), 6);
+        assertEquals(command.getSubcommand("subcommand1").getStringParameter("parameter1").getValue(), "string");
+        assertEquals(command.getSubcommand("subcommand1").getIntegerParameter("parameter2").getValue().intValue(), 6);
     }
 
     @Test
@@ -69,16 +69,16 @@ public class CommandLineTest {
         commandLine.createCommand("command", "description");
         Subcommand subcommand1 = new Subcommand("subcommand1", "description");
         subcommand1.add(new StringParameter("parameter1", "description", "dummy"));
-        subcommand1.add(new IntegerParameter("parameter2", "description"));
+        subcommand1.add(new BooleanParameter("parameter2", "description"));
         commandLine.getCommand().add(subcommand1);
 
-        Command command = commandLine.parse("subcommand1", "--parameter2=6");
+        Command command = commandLine.parse("subcommand1", "--parameter2=true");
         assertEquals(command.getName(), "command");
         assertEquals(command.getSubcommands().size(), 1);
         assertEquals(command.getSubcommands().iterator().next().getName(), "subcommand1");
         assertEquals(command.getSubcommand("subcommand1").getParameters().size(), 2);
-        assertEquals(command.getSubcommand("subcommand1").getParameter("parameter1").getValue(), "dummy");
-        assertEquals(command.getSubcommand("subcommand1").getParameter("parameter2").getValue(), 6);
+        assertEquals(command.getSubcommand("subcommand1").getStringParameter("parameter1").getValue(), "dummy");
+        assertTrue(command.getSubcommand("subcommand1").getBooleanParameter("parameter2").getValue());
     }
 
     @Test(expectedExceptions = ParameterException.class)
@@ -87,7 +87,7 @@ public class CommandLineTest {
         commandLine.createCommand("command", "description");
         Subcommand subcommand1 = new Subcommand("subcommand1", "description");
         subcommand1.add(new StringParameter("parameter1", "description", "dummy"));
-        subcommand1.add(new IntegerParameter("parameter2", "description"));
+        subcommand1.add(new BooleanParameter("parameter2", "description"));
         commandLine.getCommand().add(subcommand1);
 
         commandLine.parse("subcommand1", "--parameter1=dummy");

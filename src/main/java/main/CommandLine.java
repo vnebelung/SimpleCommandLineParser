@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 12/22/18 1:34 AM.
- * Copyright (c) 2013-2018 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 2/17/19 11:16 PM.
+ * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -69,21 +69,20 @@ public class CommandLine {
      *                            nature.
      */
     public Command parse(String... args) throws ParameterException {
-        Command result = new Command(command.getName(), "");
+        Command result = command.copy();
         List<String> arguments = new LinkedList<>(Arrays.asList(args));
 
         // If a subcommand must be present, check for its existence
         if (command.getSubcommands().size() > 0) {
 
+            // Parse the subcommand
             try {
                 parseSubcommand(arguments, result);
             } catch (ParameterException e) {
                 throw new ParameterException(helpMenu.printUsage(e.getMessage()));
             }
 
-            // Copy all must-have and should-have parameters to the resulting subcommand
             Subcommand subcommand = result.getSubcommands().iterator().next();
-            command.getSubcommand(subcommand.getName()).getParameters().forEach(p -> subcommand.add(p.copy()));
 
             try {
                 // Parse all parameters of the subcommand
@@ -103,9 +102,6 @@ public class CommandLine {
 
         } else {
 
-            // Copy all must-have and should-have parameters to the resulting command
-            command.getParameters().forEach(p -> result.add(p.copy()));
-
             try {
                 // Parse all parameters of the command
                 parseParameters(arguments, command);
@@ -121,6 +117,7 @@ public class CommandLine {
                     throw new ParameterException(helpMenu.printUsage(error));
                 }
             }
+
         }
 
         return result;
