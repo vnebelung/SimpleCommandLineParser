@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 2/17/19 11:16 PM.
+ * This file is part of ProDisFuzz, modified on 2/20/19 8:27 PM.
  * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -104,14 +104,14 @@ public class CommandLine {
 
             try {
                 // Parse all parameters of the command
-                parseParameters(arguments, command);
+                parseParameters(arguments, result);
             } catch (ParameterException e) {
                 throw new ParameterException(helpMenu.printUsage(e.getMessage()));
             }
 
             // Check if all parameters have values not null. A null value means that a mandatory parameter was not
             // being set via the command line parameters
-            for (Parameter parameter : command.getParameters()) {
+            for (Parameter parameter : result.getParameters()) {
                 if (parameter.getValue() == null) {
                     String error = "Parameter '" + parameter.getName() + "' is missing";
                     throw new ParameterException(helpMenu.printUsage(error));
