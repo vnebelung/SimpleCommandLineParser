@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 2/19/19 10:06 PM.
+ * This file is part of ProDisFuzz, modified on 2/21/19 9:55 PM.
  * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -8,10 +8,7 @@
 
 package commands;
 
-import parameters.BooleanParameter;
-import parameters.IntegerParameter;
-import parameters.Parameter;
-import parameters.StringParameter;
+import parameters.*;
 
 import java.util.*;
 
@@ -21,9 +18,9 @@ import java.util.*;
  */
 public class Subcommand {
 
-    Map<String, Parameter<Integer>> namesToIntegerParameters = new TreeMap<>();
-    Map<String, Parameter<String>> namesToStringParameters = new TreeMap<>();
-    Map<String, Parameter<Boolean>> namesToBooleanParameters = new TreeMap<>();
+    Map<String, InternalParameter<Integer>> namesToIntegerParameters = new TreeMap<>();
+    Map<String, InternalParameter<String>> namesToStringParameters = new TreeMap<>();
+    Map<String, InternalParameter<Boolean>> namesToBooleanParameters = new TreeMap<>();
     private String description;
     private String name;
 
@@ -94,8 +91,8 @@ public class Subcommand {
      *
      * @return the parameters of this subcommand
      */
-    public Set<Parameter<?>> getParameters() {
-        Set<Parameter<?>> result = new TreeSet<>(Comparator.comparing(Parameter::getName));
+    public Set<InternalParameter<?>> getParameters() {
+        Set<InternalParameter<?>> result = new TreeSet<>(Comparator.comparing(Parameter::getName));
         result.addAll(namesToIntegerParameters.values());
         result.addAll(namesToStringParameters.values());
         result.addAll(namesToBooleanParameters.values());
@@ -149,13 +146,13 @@ public class Subcommand {
      */
     public Subcommand copy() {
         Subcommand result = new Subcommand(name, description);
-        for (Map.Entry<String, Parameter<Boolean>> nameToParameter : namesToBooleanParameters.entrySet()) {
+        for (Map.Entry<String, InternalParameter<Boolean>> nameToParameter : namesToBooleanParameters.entrySet()) {
             result.namesToBooleanParameters.put(nameToParameter.getKey(), nameToParameter.getValue().copy());
         }
-        for (Map.Entry<String, Parameter<String>> nameToParameter : namesToStringParameters.entrySet()) {
+        for (Map.Entry<String, InternalParameter<String>> nameToParameter : namesToStringParameters.entrySet()) {
             result.namesToStringParameters.put(nameToParameter.getKey(), nameToParameter.getValue().copy());
         }
-        for (Map.Entry<String, Parameter<Integer>> nameToParameter : namesToIntegerParameters.entrySet()) {
+        for (Map.Entry<String, InternalParameter<Integer>> nameToParameter : namesToIntegerParameters.entrySet()) {
             result.namesToIntegerParameters.put(nameToParameter.getKey(), nameToParameter.getValue().copy());
         }
         return result;

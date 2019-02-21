@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 12/28/18 9:12 PM.
- * Copyright (c) 2013-2018 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 2/21/19 10:09 PM.
+ * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -10,6 +10,7 @@ package main;
 
 import commands.Command;
 import commands.Subcommand;
+import parameters.InternalParameter;
 import parameters.Parameter;
 
 import java.util.*;
@@ -69,7 +70,7 @@ class HelpMenu {
         List<String> strings = new LinkedList<>();
         strings.add(command.getName());
         strings.add(subcommandName);
-        command.getSubcommand(subcommandName).getParameters().stream().filter(Parameter::isMandatory)
+        command.getSubcommand(subcommandName).getParameters().stream().filter(InternalParameter::isMandatory)
                 .map(p -> "--" + p.getName() + "=<value>").forEach(strings::add);
         command.getSubcommand(subcommandName).getParameters().stream().filter(p -> !p.isMandatory())
                 .map(p -> "[--" + p.getName() + "=<value>]").forEach(strings::add);
@@ -98,7 +99,8 @@ class HelpMenu {
 
         List<String> strings = new LinkedList<>();
         strings.add(command.getName());
-        command.getParameters().stream().filter(Parameter::isMandatory).map(p -> "--" + p.getName() + "=<value>")
+        command.getParameters().stream().filter(InternalParameter::isMandatory)
+                .map(p -> "--" + p.getName() + "=<value>")
                 .forEach(strings::add);
         command.getParameters().stream().filter(p -> !p.isMandatory()).map(p -> "[--" + p.getName() + "=<value>]")
                 .forEach(strings::add);
@@ -178,14 +180,14 @@ class HelpMenu {
      * @param parameters the parameters
      * @return the parameter block
      */
-    private String printParameters(Set<Parameter<?>> parameters) {
+    private String printParameters(Set<InternalParameter<?>> parameters) {
         StringBuilder result = new StringBuilder();
         result.append("Options:").append(System.lineSeparator());
 
         //noinspection OptionalGetWithoutIsPresent
         int maxNameWidth = parameters.stream().map(Parameter::getName).map(String::length)
                 .max(Comparator.comparing(Integer::intValue)).get();
-        for (Parameter parameter : parameters) {
+        for (InternalParameter parameter : parameters) {
             List<String> parts = new LinkedList<>();
             parts.add(String.format("  --%1$-" + maxNameWidth + "s  ", parameter.getName()));
             if (!parameter.isMandatory()) {

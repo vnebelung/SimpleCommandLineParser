@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 12/18/18 12:44 PM.
- * Copyright (c) 2013-2018 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 2/21/19 9:46 PM.
+ * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -15,7 +15,7 @@ import main.ParameterException;
  * string is as follows: COMMAND SUBCOMMAND --key1 value1 --key2 value2 ... The type parameter T is the class of the
  * parameter's value.
  */
-abstract class AbstractParameter<T> implements Parameter<T> {
+abstract class AbstractParameter<T> implements InternalParameter<T> {
 
     private T value;
     private String description;

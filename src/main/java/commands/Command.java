@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 2/19/19 10:04 PM.
+ * This file is part of ProDisFuzz, modified on 2/21/19 10:09 PM.
  * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -10,7 +10,7 @@ package commands;
 
 import parameters.BooleanParameter;
 import parameters.IntegerParameter;
-import parameters.Parameter;
+import parameters.InternalParameter;
 import parameters.StringParameter;
 
 import java.util.*;
@@ -120,13 +120,13 @@ public class Command extends Subcommand {
      */
     public Command copy() {
         Command result = new Command(getName(), getDescription());
-        for (Map.Entry<String, Parameter<Boolean>> nameToParameter : namesToBooleanParameters.entrySet()) {
+        for (Map.Entry<String, InternalParameter<Boolean>> nameToParameter : namesToBooleanParameters.entrySet()) {
             result.namesToBooleanParameters.put(nameToParameter.getKey(), nameToParameter.getValue().copy());
         }
-        for (Map.Entry<String, Parameter<String>> nameToParameter : namesToStringParameters.entrySet()) {
+        for (Map.Entry<String, InternalParameter<String>> nameToParameter : namesToStringParameters.entrySet()) {
             result.namesToStringParameters.put(nameToParameter.getKey(), nameToParameter.getValue().copy());
         }
-        for (Map.Entry<String, Parameter<Integer>> nameToParameter : namesToIntegerParameters.entrySet()) {
+        for (Map.Entry<String, InternalParameter<Integer>> nameToParameter : namesToIntegerParameters.entrySet()) {
             result.namesToIntegerParameters.put(nameToParameter.getKey(), nameToParameter.getValue().copy());
         }
         return result;
