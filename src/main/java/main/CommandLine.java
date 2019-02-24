@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 2/21/19 10:09 PM.
+ * This file is part of ProDisFuzz, modified on 2/21/19 10:32 PM.
  * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -144,7 +144,7 @@ public class CommandLine {
             String value = argument.substring(argument.indexOf('=') + 1);
             InternalParameter parameter =
                     parent.getParameters().stream().filter(p -> p.getName().equals(key)).findFirst()
-                    .orElseThrow(() -> new ParameterException("Unknown parameter '" + key + "'"));
+                            .orElseThrow(() -> new ParameterException("Unknown parameter '" + key + "'"));
             parameter.setValue(value);
         }
     }
