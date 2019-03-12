@@ -1,12 +1,12 @@
 /*
- * This file is part of ProDisFuzz, modified on 2/21/19 10:08 PM.
+ * This file is part of ProDisFuzz, modified on 3/9/19 3:29 PM.
  * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
  */
 
-package parameters;
+package internal.parameters;
 
 import main.ParameterException;
 import org.testng.annotations.Test;
@@ -22,29 +22,32 @@ public class AbstractParameterTest {
     }
 
     @Test
-    public void testGetValue1() {
+    public void testGetValue() {
         AbstractParameter<Boolean> parameter = new BooleanParameter("", "");
         assertNull(parameter.getValue());
     }
 
     @Test
-    public void testGetValue2() throws ParameterException {
+    public void testSetValue() throws ParameterException {
         AbstractParameter<Boolean> parameter = new BooleanParameter("", "");
         parameter.setValue("true");
         assertTrue(parameter.getValue());
     }
 
     @Test
-    public void testGetValue3() {
-        AbstractParameter<Integer> parameter = new IntegerParameter("", "", 6);
-        assertEquals(parameter.getValue().intValue(), 6);
+    public void testSetValue1() throws ParameterException {
+        AbstractParameter<Integer> parameter = new IntegerParameter("", "");
+        parameter.setDefaultValue(6);
+        parameter.setValue("1");
+        assertEquals(parameter.getValue().intValue(), 1);
     }
 
     @Test
-    public void testGetValue4() throws ParameterException {
-        InternalParameter<Integer> parameter = new IntegerParameter("", "", 6);
-        parameter.setValue("1");
-        assertEquals(parameter.getValue().intValue(), 1);
+    public void testSetDefaultValue() {
+        AbstractParameter<Integer> parameter = new IntegerParameter("", "");
+        parameter.setDefaultValue(6);
+        assertEquals(parameter.getValue().intValue(), 6);
+        assertFalse(parameter.isMandatory());
     }
 
     @Test
@@ -55,20 +58,21 @@ public class AbstractParameterTest {
     }
 
     @Test
-    public void testIsMandatory1() {
+    public void testIsMandatory() {
         AbstractParameter<Boolean> parameter = new BooleanParameter("", "");
         assertTrue(parameter.isMandatory());
     }
 
     @Test
-    public void testIsMandatory2() {
-        AbstractParameter<Boolean> parameter = new BooleanParameter("", "", true);
+    public void testIsMandatory1() {
+        AbstractParameter<Boolean> parameter = new BooleanParameter("", "");
+        parameter.setDefaultValue(false);
         assertFalse(parameter.isMandatory());
     }
 
     @Test
     public void testGetName() {
-        AbstractParameter<Boolean> parameter = new BooleanParameter("testname", "", true);
+        AbstractParameter<Boolean> parameter = new BooleanParameter("testname", "");
         assertEquals(parameter.getName(), "testname");
     }
 

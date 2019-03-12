@@ -1,19 +1,20 @@
 /*
- * This file is part of ProDisFuzz, modified on 12/22/18 9:26 PM.
- * Copyright (c) 2013-2018 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 3/9/19 3:15 PM.
+ * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
  */
 
-package main;
+package internal.help;
 
-import commands.Command;
-import commands.Subcommand;
+import internal.commands.InternalCommand;
+import internal.commands.InternalSubcommand;
+import internal.parameters.BooleanParameter;
+import internal.parameters.IntegerParameter;
+import internal.parameters.StringParameter;
+import main.Parameter;
 import org.testng.annotations.Test;
-import parameters.BooleanParameter;
-import parameters.IntegerParameter;
-import parameters.StringParameter;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class HelpMenuTest {
 
     @Test
     public void testPrintUsage() {
-        Command command = new Command("commandname",
+        InternalCommand internalCommand = new InternalCommand("commandname",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
@@ -33,15 +34,17 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet.");
-        command.add(new BooleanParameter("parameter1",
+        Parameter<Boolean> parameter1 = new BooleanParameter("parameter1",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.", true));
-        command.add(new IntegerParameter("param2",
+                        "sanctus est Lorem ipsum dolor sit amet.");
+        parameter1.setDefaultValue(true);
+        internalCommand.add(parameter1);
+        internalCommand.add(new IntegerParameter("param2",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
@@ -49,7 +52,7 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet."));
-        HelpMenu helpMenu = new HelpMenu(command);
+        HelpMenu helpMenu = new HelpMenu(internalCommand);
 
         List<String> reference = new LinkedList<>();
         reference.add("Error: texterror");
@@ -93,7 +96,7 @@ public class HelpMenuTest {
 
     @Test
     public void testPrintUsage1() {
-        Command command = new Command("commandname",
+        InternalCommand internalCommand = new InternalCommand("commandname",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
@@ -101,7 +104,7 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet.");
-        Subcommand subcommand1 = new Subcommand("subcommand1",
+        InternalSubcommand internalSubcommand1 = new InternalSubcommand("subcommand1",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
@@ -109,15 +112,17 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet.");
-        subcommand1.add(new StringParameter("parameter3",
+        Parameter<String> parameter3 = new StringParameter("parameter3",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.", "text"));
-        subcommand1.add(new BooleanParameter("param4",
+                        "sanctus est Lorem ipsum dolor sit amet.");
+        parameter3.setDefaultValue("text");
+        internalSubcommand1.add(parameter3);
+        internalSubcommand1.add(new BooleanParameter("param4",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
@@ -125,8 +130,8 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet."));
-        command.add(subcommand1);
-        Subcommand subcommand2 = new Subcommand("subcommand2",
+        internalCommand.add(internalSubcommand1);
+        InternalSubcommand internalSubcommand2 = new InternalSubcommand("subcommand2",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
@@ -134,15 +139,17 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet.");
-        subcommand2.add(new IntegerParameter("parameter5",
+        Parameter<Integer> parameter5 = new IntegerParameter("parameter5",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.", 5));
-        subcommand2.add(new StringParameter("param6",
+                        "sanctus est Lorem ipsum dolor sit amet.");
+        parameter5.setDefaultValue(5);
+        internalSubcommand2.add(parameter5);
+        internalSubcommand2.add(new StringParameter("param6",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
@@ -150,8 +157,8 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet."));
-        command.add(subcommand2);
-        HelpMenu helpMenu = new HelpMenu(command);
+        internalCommand.add(internalSubcommand2);
+        HelpMenu helpMenu = new HelpMenu(internalCommand);
 
         List<String> reference = new LinkedList<>();
         reference.add("Error: texterror");
@@ -195,7 +202,7 @@ public class HelpMenuTest {
 
     @Test
     public void testPrintUsage2() {
-        Command command = new Command("commandname",
+        InternalCommand internalCommand = new InternalCommand("commandname",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
@@ -203,7 +210,7 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet.");
-        Subcommand subcommand1 = new Subcommand("subcommand1",
+        InternalSubcommand internalSubcommand1 = new InternalSubcommand("subcommand1",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
@@ -211,15 +218,17 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet.");
-        subcommand1.add(new StringParameter("parameter3",
+        Parameter<String> parameter3 = new StringParameter("parameter3",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.", "text"));
-        subcommand1.add(new BooleanParameter("param4",
+                        "sanctus est Lorem ipsum dolor sit amet.");
+        parameter3.setDefaultValue("text");
+        internalSubcommand1.add(parameter3);
+        internalSubcommand1.add(new BooleanParameter("param4",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
@@ -227,8 +236,8 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet."));
-        command.add(subcommand1);
-        Subcommand subcommand2 = new Subcommand("subcommand2",
+        internalCommand.add(internalSubcommand1);
+        InternalSubcommand internalSubcommand2 = new InternalSubcommand("subcommand2",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
@@ -236,15 +245,17 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet.");
-        subcommand2.add(new IntegerParameter("parameter5",
+        Parameter<Integer> parameter5 = new IntegerParameter("parameter5",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.", 5));
-        subcommand2.add(new StringParameter("param6",
+                        "sanctus est Lorem ipsum dolor sit amet.");
+        parameter5.setDefaultValue(5);
+        internalSubcommand2.add(parameter5);
+        internalSubcommand2.add(new StringParameter("param6",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
@@ -252,8 +263,8 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet."));
-        command.add(subcommand2);
-        HelpMenu helpMenu = new HelpMenu(command);
+        internalCommand.add(internalSubcommand2);
+        HelpMenu helpMenu = new HelpMenu(internalCommand);
 
         List<String> reference = new LinkedList<>();
         reference.add("Error: texterror");
@@ -296,7 +307,7 @@ public class HelpMenuTest {
 
     @Test
     public void testPrintUsage3() {
-        Command command = new Command("commandname",
+        InternalCommand internalCommand = new InternalCommand("commandname",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
@@ -304,7 +315,7 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet.");
-        HelpMenu helpMenu = new HelpMenu(command);
+        HelpMenu helpMenu = new HelpMenu(internalCommand);
 
         List<String> reference = new LinkedList<>();
         reference.add("Error: texterror");

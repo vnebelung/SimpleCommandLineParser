@@ -1,21 +1,23 @@
 /*
- * This file is part of ProDisFuzz, modified on 2/21/19 9:46 PM.
+ * This file is part of ProDisFuzz, modified on 3/13/19 12:01 AM.
  * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
  */
 
-package parameters;
+package internal.parameters;
 
+import main.Parameter;
 import main.ParameterException;
+import main.ParsedParameter;
 
 /**
  * This class is an abstract parameter of the command line string used in the command line call. The format of this
  * string is as follows: COMMAND SUBCOMMAND --key1 value1 --key2 value2 ... The type parameter T is the class of the
  * parameter's value.
  */
-abstract class AbstractParameter<T> implements InternalParameter<T> {
+public abstract class AbstractParameter<T> implements Parameter<T>, ParsedParameter<T> {
 
     private T value;
     private String description;
@@ -35,21 +37,10 @@ abstract class AbstractParameter<T> implements InternalParameter<T> {
     }
 
     /**
-     * Instantiates a new optional parameter with a given description and a given default value that is used when no
-     * user-defined value is provided.
+     * Returns the description of this parameter.
      *
-     * @param name         the parameter's name
-     * @param description  the parameter's description for the help menu
-     * @param defaultValue the parameter's default value
+     * @return the parameter's description
      */
-    AbstractParameter(String name, String description, T defaultValue) {
-        this.name = name;
-        this.description = description;
-        value = defaultValue;
-        isMandatory = false;
-    }
-
-    @Override
     public String getDescription() {
         return description;
     }
@@ -59,7 +50,13 @@ abstract class AbstractParameter<T> implements InternalParameter<T> {
         return value;
     }
 
-    @Override
+    /**
+     * Sets the value of the parameter. If the given value cannot be cast to the parameter's type parameter, a
+     * ParameterException is thrown.
+     *
+     * @param value the new parameter's value
+     * @throws ParameterException if the given value cannot be cast to the parameter's type parameter
+     */
     public abstract void setValue(String value) throws ParameterException;
 
     /**
@@ -71,7 +68,11 @@ abstract class AbstractParameter<T> implements InternalParameter<T> {
         this.value = value;
     }
 
-    @Override
+    /**
+     * Returns whether this parameter is mandatory or optional.
+     *
+     * @return true if the parameter is mandatory
+     */
     public boolean isMandatory() {
         return isMandatory;
     }
@@ -79,6 +80,12 @@ abstract class AbstractParameter<T> implements InternalParameter<T> {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public void setDefaultValue(T value) {
+        this.value = value;
+        isMandatory = false;
     }
 
 }

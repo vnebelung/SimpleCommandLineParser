@@ -1,22 +1,22 @@
 /*
- * This file is part of ProDisFuzz, modified on 2/21/19 9:55 PM.
+ * This file is part of ProDisFuzz, modified on 3/7/19 12:23 AM.
  * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
  */
 
-package parameters;
+package internal.parameters;
 
 import main.ParameterException;
 
 /**
- * This class represents a string parameter of the command line.
+ * This class is a string parameter of the command line.
  */
 public class StringParameter extends AbstractParameter<String> {
 
     /**
-     * Instantiates a new mandatory integer parameter.
+     * Instantiates a new integer parameter.
      *
      * @param name        the parameter's name
      * @param description the parameter's description for the help menu
@@ -25,29 +25,12 @@ public class StringParameter extends AbstractParameter<String> {
         super(name, description);
     }
 
-    /**
-     * Instantiates a new optional integer parameter.
-     *
-     * @param name         the parameter's name
-     * @param description  the parameter's description for the help menu
-     * @param defaultValue the parameter's default value
-     */
-    public StringParameter(String name, String description, String defaultValue) {
-        super(name, description, defaultValue);
-    }
-
     @Override
     public void setValue(String value) throws ParameterException {
         if (value.isBlank()) {
             throw new ParameterException("The parameter's value must not be empty");
         }
         setInternalValue(value);
-    }
-
-    @Override
-    public InternalParameter<String> copy() {
-        return getValue() == null ? new StringParameter(getName(), getDescription()) :
-                new StringParameter(getName(), getDescription(), getValue());
     }
 
 }

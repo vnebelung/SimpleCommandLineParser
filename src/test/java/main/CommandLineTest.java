@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 2/20/19 11:32 PM.
+ * This file is part of ProDisFuzz, modified on 3/12/19 1:03 AM.
  * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -8,12 +8,9 @@
 
 package main;
 
-import commands.Command;
-import commands.Subcommand;
+import internal.commands.InternalSubcommand;
+import internal.parameters.StringParameter;
 import org.testng.annotations.Test;
-import parameters.BooleanParameter;
-import parameters.IntegerParameter;
-import parameters.StringParameter;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,75 +21,79 @@ import static org.testng.Assert.*;
 public class CommandLineTest {
 
     @Test
-    public void testCreateCommand() {
-        CommandLine commandLine = new CommandLine();
-        commandLine.createCommand("testname", "testdescription");
-        assertEquals(commandLine.getCommand().getName(), "testname");
-        assertEquals(commandLine.getCommand().getDescription(), "testdescription");
+    public void testCreateSubcommand() {
+        CommandLine commandLine = new CommandLine("", "");
+        assertNotNull(commandLine.createSubcommand("subommandname", "subcommanddescription"));
     }
 
     @Test
-    public void testGetCommand() {
-        CommandLine commandLine = new CommandLine();
-        assertNull(commandLine.getCommand());
+    public void testCreateBooleanParameter() {
+        CommandLine commandLine = new CommandLine("", "");
+        assertNotNull(commandLine.createBooleanParameter("", ""));
+
+    }
+
+    @Test
+    public void testCreateIntegerParameter() {
+        CommandLine commandLine = new CommandLine("", "");
+        assertNotNull(commandLine.createIntegerParameter("", ""));
+
+    }
+
+    @Test
+    public void testCreateStringParameter() {
+        CommandLine commandLine = new CommandLine("", "");
+        assertNotNull(commandLine.createStringParameter("", ""));
 
     }
 
     @Test
     public void testGetCommand1() {
-        CommandLine commandLine = new CommandLine();
-        commandLine.createCommand("testname", "testdescriptipn");
+        CommandLine commandLine = new CommandLine("", "");
         assertNotNull(commandLine.getCommand());
     }
 
     @Test
     public void testParse() throws ParameterException {
-        CommandLine commandLine = new CommandLine();
-        commandLine.createCommand("commandname", "commanddescription");
-        Subcommand subcommand1 = new Subcommand("subcommand1name", "subcommand1description");
-        subcommand1.add(new StringParameter("parameter1name", "parameter1description", "dummy"));
-        subcommand1.add(new IntegerParameter("parameter2name", "parameter2description"));
-        subcommand1.add(new BooleanParameter("parameter3name", "parameter3description"));
+        CommandLine commandLine = new CommandLine("commandname", "commanddescription");
+        Subcommand subcommand1 = commandLine.createSubcommand("subcommand1name", "subcommand1description");
+        Parameter<String> parameter1 = commandLine.createStringParameter("parameter1name", "parameter1description");
+        parameter1.setDefaultValue("dummy");
+        subcommand1.add(parameter1);
+        subcommand1.add(commandLine.createIntegerParameter("parameter2name", "parameter2description"));
+        subcommand1.add(commandLine.createBooleanParameter("parameter3name", "parameter3description"));
         commandLine.getCommand().add(subcommand1);
-        Subcommand subcommand2 = new Subcommand("subcommand2name", "subcommand2description");
-        subcommand2.add(new StringParameter("parameter4name", "parameter4description", "dummy"));
-        subcommand2.add(new IntegerParameter("parameter5name", "parameter5description"));
-        subcommand2.add(new BooleanParameter("parameter6name", "parameter6description"));
+        Subcommand subcommand2 = commandLine.createSubcommand("subcommand2name", "subcommand2description");
+        Parameter<String> parameter4 = commandLine.createStringParameter("parameter4name", "parameter4description");
+        parameter4.setDefaultValue("dummy");
+        subcommand2.add(parameter4);
+        subcommand2.add(commandLine.createIntegerParameter("parameter5name", "parameter5description"));
+        subcommand2.add(commandLine.createBooleanParameter("parameter6name", "parameter6description"));
         commandLine.getCommand().add(subcommand2);
 
-        Command command = commandLine.parse("subcommand1name", "--parameter1name=parameter1value", "--parameter2name=6",
-                "--parameter3name=true");
+        ParsedCommand parsedCommand = commandLine
+                .parse("subcommand1name", "--parameter1name=parameter1value", "--parameter2name=6",
+                        "--parameter3name=true");
 
-        assertEquals(command.getName(), "commandname");
-        assertEquals(command.getDescription(), "commanddescription");
-        assertEquals(command.getParameters().size(), 0);
+        assertEquals(parsedCommand.getName(), "commandname");
 
-        assertEquals(command.getSubcommands().size(), 1);
-        assertEquals(command.getSubcommands().iterator().next().getName(), "subcommand1name");
-        assertEquals(command.getSubcommands().iterator().next().getDescription(), "subcommand1description");
+        assertNotNull(parsedCommand.getSubcommand());
+        assertEquals(parsedCommand.getSubcommand().getName(), "subcommand1name");
 
-        assertEquals(command.getSubcommand("subcommand1name").getParameters().size(), 3);
-        assertEquals(command.getSubcommand("subcommand1name").getStringParameter("parameter1name").getValue(),
-                "parameter1value");
-        assertEquals(command.getSubcommand("subcommand1name").getStringParameter("parameter1name").getDescription(),
-                "parameter1description");
-        assertEquals(
-                command.getSubcommand("subcommand1name").getIntegerParameter("parameter2name").getValue().intValue(),
-                6);
-        assertEquals(command.getSubcommand("subcommand1name").getIntegerParameter("parameter2name").getDescription(),
-                "parameter2description");
-        assertTrue(command.getSubcommand("subcommand1name").getBooleanParameter("parameter3name").getValue());
-        assertEquals(command.getSubcommand("subcommand1name").getBooleanParameter("parameter3name").getDescription(),
-                "parameter3description");
+        assertEquals(parsedCommand.getSubcommand().getStringParameter("parameter1name").getValue(), "parameter1value");
+        assertEquals(parsedCommand.getSubcommand().getIntegerParameter("parameter2name").getValue().intValue(), 6);
+        assertTrue(parsedCommand.getSubcommand().getBooleanParameter("parameter3name").getValue());
     }
 
     @Test(expectedExceptions = ParameterException.class)
     public void testParse1() throws ParameterException {
-        CommandLine commandLine = new CommandLine();
-        commandLine.createCommand("commandname", "commanddescription");
-        Subcommand subcommand1 = new Subcommand("subcommand1name", "subcommand1description");
-        subcommand1.add(new StringParameter("parameter1name", "parameter1description", "dummy"));
-        subcommand1.add(new BooleanParameter("parameter2name", "parameter2description"));
+        CommandLine commandLine = new CommandLine("commandname", "commanddescription");
+        Subcommand subcommand1 = new InternalSubcommand("subcommand1name", "subcommand1description");
+        Parameter<String> parameter1 = commandLine.createStringParameter("parameter1name", "parameter1description");
+        parameter1.setDefaultValue("dummy");
+        subcommand1.add(parameter1);
+        Parameter<Boolean> parameter2 = commandLine.createBooleanParameter("parameter2name", "parameter2description");
+        subcommand1.add(parameter2);
         commandLine.getCommand().add(subcommand1);
 
         commandLine.parse("subcommand1name", "--parameter1name=parameter1value");
@@ -100,11 +101,13 @@ public class CommandLineTest {
 
     @Test(expectedExceptions = ParameterException.class)
     public void testParse2() throws ParameterException {
-        CommandLine commandLine = new CommandLine();
-        commandLine.createCommand("commandname", "commanddescription");
-        Subcommand subcommand1 = new Subcommand("subcommand1name", "subcommand1description");
-        subcommand1.add(new StringParameter("parameter1name", "parameter1description", "dummy"));
-        subcommand1.add(new IntegerParameter("parameter2name", "parameter2description"));
+        CommandLine commandLine = new CommandLine("commandname", "commanddescription");
+        InternalSubcommand subcommand1 = new InternalSubcommand("subcommand1name", "subcommand1description");
+        Parameter<String> parameter1 = commandLine.createStringParameter("parameter1name", "parameter1description");
+        parameter1.setDefaultValue("dummy");
+        subcommand1.add(parameter1);
+        Parameter<Integer> parameter2 = commandLine.createIntegerParameter("parameter2name", "parameter2description");
+        subcommand1.add(parameter2);
         commandLine.getCommand().add(subcommand1);
 
         commandLine.parse("subcommand1name", "--parameter1name=", "--parameter3name=2");
@@ -112,11 +115,13 @@ public class CommandLineTest {
 
     @Test(expectedExceptions = ParameterException.class)
     public void testParse3() throws ParameterException {
-        CommandLine commandLine = new CommandLine();
-        commandLine.createCommand("commandname", "commanddescription");
-        Subcommand subcommand1 = new Subcommand("subcommand1name", "subcommand1description");
-        subcommand1.add(new StringParameter("parameter1name", "parameter1description", "dummy"));
-        subcommand1.add(new IntegerParameter("parameter2name", "parameter2description"));
+        CommandLine commandLine = new CommandLine("commandname", "commanddescription");
+        InternalSubcommand subcommand1 = new InternalSubcommand("subcommand1name", "subcommand1description");
+        Parameter<String> parameter1 = commandLine.createStringParameter("parameter1name", "parameter1description");
+        parameter1.setDefaultValue("dummy");
+        subcommand1.add(parameter1);
+        Parameter<Integer> parameter2 = commandLine.createIntegerParameter("parameter2name", "parameter2description");
+        subcommand1.add(parameter2);
         commandLine.getCommand().add(subcommand1);
 
         commandLine.parse("--parameter1name=parameter1value", "--parameter2name=6", "subcommand1name");
@@ -124,11 +129,13 @@ public class CommandLineTest {
 
     @Test(expectedExceptions = ParameterException.class)
     public void testParse4() throws ParameterException {
-        CommandLine commandLine = new CommandLine();
-        commandLine.createCommand("commandname", "commanddescription");
-        Subcommand subcommand1 = new Subcommand("subcommand1name", "subcommand1description");
-        subcommand1.add(new StringParameter("parameter1name", "parameter1description", "dummy"));
-        subcommand1.add(new IntegerParameter("parameter2name", "parameter2description"));
+        CommandLine commandLine = new CommandLine("commandname", "commanddescription");
+        InternalSubcommand subcommand1 = new InternalSubcommand("subcommand1name", "subcommand1description");
+        Parameter<String> parameter1 = commandLine.createStringParameter("parameter1name", "parameter1description");
+        parameter1.setDefaultValue("dummy");
+        subcommand1.add(parameter1);
+        Parameter<Integer> parameter2 = commandLine.createIntegerParameter("parameter2name", "parameter2description");
+        subcommand1.add(parameter2);
         commandLine.getCommand().add(subcommand1);
 
         commandLine.parse("subcommand1name", "parameter1name=parameter1value", "--parameter2name=6");
@@ -136,11 +143,13 @@ public class CommandLineTest {
 
     @Test(expectedExceptions = ParameterException.class)
     public void testParse5() throws ParameterException {
-        CommandLine commandLine = new CommandLine();
-        commandLine.createCommand("commandname", "commanddescription");
-        Subcommand subcommand1 = new Subcommand("subcommand1name", "subcommand1description");
-        subcommand1.add(new StringParameter("parameter1name", "parameter1description", "dummy"));
-        subcommand1.add(new IntegerParameter("parameter2name", "parameter2description"));
+        CommandLine commandLine = new CommandLine("commandname", "commanddescription");
+        InternalSubcommand subcommand1 = new InternalSubcommand("subcommand1name", "subcommand1description");
+        Parameter<String> parameter1 = commandLine.createStringParameter("parameter1name", "parameter1description");
+        parameter1.setDefaultValue("dummy");
+        subcommand1.add(parameter1);
+        Parameter<Integer> parameter2 = commandLine.createIntegerParameter("parameter2name", "parameter2description");
+        subcommand1.add(parameter2);
         commandLine.getCommand().add(subcommand1);
 
         commandLine.parse("subcommand1name", "-parameter1name=parameter1value", "--parameter2name=6");
@@ -148,11 +157,13 @@ public class CommandLineTest {
 
     @Test(expectedExceptions = ParameterException.class)
     public void testParse6() throws ParameterException {
-        CommandLine commandLine = new CommandLine();
-        commandLine.createCommand("commandname", "commanddescription");
-        Subcommand subcommand1 = new Subcommand("subcommand1name", "subcommand1description");
-        subcommand1.add(new StringParameter("parameter1name", "parameter1description", "dummy"));
-        subcommand1.add(new IntegerParameter("parameter2name", "parameter2description"));
+        CommandLine commandLine = new CommandLine("commandname", "commanddescription");
+        InternalSubcommand subcommand1 = new InternalSubcommand("subcommand1name", "subcommand1description");
+        Parameter<String> parameter1 = commandLine.createStringParameter("parameter1name", "parameter1description");
+        parameter1.setDefaultValue("dummy");
+        subcommand1.add(parameter1);
+        Parameter<Integer> parameter2 = commandLine.createIntegerParameter("parameter2name", "parameter2description");
+        subcommand1.add(parameter2);
         commandLine.getCommand().add(subcommand1);
 
         commandLine.parse("subcommand1name", "--=parameter1value", "--parameter2name=6");
@@ -160,11 +171,13 @@ public class CommandLineTest {
 
     @Test(expectedExceptions = ParameterException.class)
     public void testParse7() throws ParameterException {
-        CommandLine commandLine = new CommandLine();
-        commandLine.createCommand("commandname", "commanddescription");
-        Subcommand subcommand1 = new Subcommand("subcommand1name", "subcommand1description");
-        subcommand1.add(new StringParameter("parameter1name", "parameter1description", "dummy"));
-        subcommand1.add(new IntegerParameter("parameter2name", "parameter2description"));
+        CommandLine commandLine = new CommandLine("commandname", "commanddescription");
+        InternalSubcommand subcommand1 = new InternalSubcommand("subcommand1name", "subcommand1description");
+        Parameter<String> parameter1 = commandLine.createStringParameter("parameter1name", "parameter1description");
+        parameter1.setDefaultValue("dummy");
+        subcommand1.add(parameter1);
+        Parameter<Integer> parameter2 = commandLine.createIntegerParameter("parameter2name", "parameter2description");
+        subcommand1.add(parameter2);
         commandLine.getCommand().add(subcommand1);
 
         commandLine.parse("subcommand1name", "--parameter1name string", "--parameter2name=6");
@@ -172,53 +185,50 @@ public class CommandLineTest {
 
     @Test
     public void testParse8() throws ParameterException {
-        CommandLine commandLine = new CommandLine();
-        commandLine.createCommand("commandname", "commanddescription");
-        commandLine.getCommand().add(new StringParameter("parameter1name", "parameter1description", "dummy"));
-        commandLine.getCommand().add(new IntegerParameter("parameter2name", "parameter2description"));
-        commandLine.getCommand().add(new BooleanParameter("parameter3name", "parameter3description"));
+        CommandLine commandLine = new CommandLine("commandname", "commanddescription");
+        Parameter<String> parameter1 = commandLine.createStringParameter("parameter1name", "parameter1description");
+        parameter1.setDefaultValue("dummy");
+        commandLine.getCommand().add(parameter1);
+        commandLine.getCommand().add(commandLine.createIntegerParameter("parameter2name", "parameter2description"));
+        commandLine.getCommand().add(commandLine.createBooleanParameter("parameter3name", "parameter3description"));
 
-        Command command =
+        ParsedCommand command =
                 commandLine.parse("--parameter1name=parameter1value", "--parameter2name=6", "--parameter3name=true");
 
         assertEquals(command.getName(), "commandname");
-        assertEquals(command.getDescription(), "commanddescription");
-        assertEquals(command.getSubcommands().size(), 0);
+        assertNull(command.getSubcommand());
 
-        assertEquals(command.getParameters().size(), 3);
         assertEquals(command.getStringParameter("parameter1name").getValue(), "parameter1value");
-        assertEquals(command.getStringParameter("parameter1name").getDescription(), "parameter1description");
         assertEquals(command.getIntegerParameter("parameter2name").getValue().intValue(), 6);
-        assertEquals(command.getIntegerParameter("parameter2name").getDescription(), "parameter2description");
         assertTrue(command.getBooleanParameter("parameter3name").getValue());
-        assertEquals(command.getBooleanParameter("parameter3name").getDescription(), "parameter3description");
     }
 
     @Test(expectedExceptions = ParameterException.class)
     public void testParse9() throws ParameterException {
-        CommandLine commandLine = new CommandLine();
-        commandLine.createCommand("commandname", "commanddescription");
-        commandLine.getCommand().add(new StringParameter("parameter1description", "parameter1description", "dummy"));
-        commandLine.getCommand().add(new IntegerParameter("parameter2name", "parameter2description"));
+        CommandLine commandLine = new CommandLine("commandname", "commanddescription");
+        Parameter<String> parameter1 = commandLine.createStringParameter("parameter1name", "parameter1description");
+        parameter1.setDefaultValue("dummy");
+        commandLine.getCommand().add(parameter1);
+        commandLine.getCommand().add(commandLine.createIntegerParameter("parameter2name", "parameter2description"));
 
         commandLine.parse("subcommand1name", "--parameter1name=parameter1value", "--parameter2name=6");
     }
 
     @Test(expectedExceptions = ParameterException.class)
     public void testParse10() throws ParameterException {
-        CommandLine commandLine = new CommandLine();
-        commandLine.createCommand("commandname", "commanddescription");
-        commandLine.getCommand().add(new StringParameter("parameter1name", "parameter1description", "dummy"));
-        commandLine.getCommand().add(new IntegerParameter("parameter2name", "parameter2description"));
+        CommandLine commandLine = new CommandLine("commandname", "commanddescription");
+        Parameter<String> parameter1 = commandLine.createStringParameter("parameter1name", "parameter1description");
+        parameter1.setDefaultValue("dummy");
+        commandLine.getCommand().add(parameter1);
+        commandLine.getCommand().add(commandLine.createIntegerParameter("parameter2name", "parameter2description"));
 
         commandLine.parse("--parameter1name=parameter1value");
     }
 
     @Test(expectedExceptions = ParameterException.class)
     public void testParse11() throws ParameterException {
-        CommandLine commandLine = new CommandLine();
-        commandLine.createCommand("commandname", "commanddescription");
-        Subcommand subcommand1 = new Subcommand("subcommand1name", "subcommand1description");
+        CommandLine commandLine = new CommandLine("commandname", "commanddescription");
+        Subcommand subcommand1 = commandLine.createSubcommand("subcommand1name", "subcommand1description");
         commandLine.getCommand().add(subcommand1);
 
         commandLine.parse();
@@ -226,8 +236,7 @@ public class CommandLineTest {
 
     @Test
     public void testPrintHelp() {
-        CommandLine commandLine = new CommandLine();
-        commandLine.createCommand("commandname",
+        CommandLine commandLine = new CommandLine("commandname",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
@@ -235,7 +244,7 @@ public class CommandLineTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet.");
-        Subcommand subcommand1 = new Subcommand("subcommand1",
+        Subcommand subcommand1 = commandLine.createSubcommand("subcommand1",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
@@ -243,24 +252,27 @@ public class CommandLineTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet.");
-        subcommand1.add(new StringParameter("parameter3",
+        Parameter<String> parameter3 = commandLine.createStringParameter("parameter3",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.", "text"));
-        subcommand1.add(new BooleanParameter("param4",
+                        "sanctus est Lorem ipsum dolor sit amet.");
+        parameter3.setDefaultValue("text");
+        subcommand1.add(parameter3);
+        Parameter<Boolean> parameter4 = commandLine.createBooleanParameter("param4",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet."));
+                        "sanctus est Lorem ipsum dolor sit amet.");
+        subcommand1.add(parameter4);
         commandLine.getCommand().add(subcommand1);
-        Subcommand subcommand2 = new Subcommand("subcommand2",
+        Subcommand subcommand2 = commandLine.createSubcommand("subcommand2",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
@@ -268,14 +280,16 @@ public class CommandLineTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet.");
-        subcommand2.add(new IntegerParameter("parameter5",
+        Parameter<Integer> parameter5 = commandLine.createIntegerParameter("parameter5",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.", 5));
+                        "sanctus est Lorem ipsum dolor sit amet.");
+        parameter5.setDefaultValue(5);
+        subcommand2.add(parameter5);
         subcommand2.add(new StringParameter("param6",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +

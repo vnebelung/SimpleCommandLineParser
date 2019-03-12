@@ -1,17 +1,16 @@
 /*
- * This file is part of ProDisFuzz, modified on 2/21/19 10:09 PM.
+ * This file is part of ProDisFuzz, modified on 3/13/19 12:00 AM.
  * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
  */
 
-package main;
+package internal.help;
 
-import commands.Command;
-import commands.Subcommand;
-import parameters.InternalParameter;
-import parameters.Parameter;
+import internal.commands.InternalCommand;
+import internal.commands.InternalSubcommand;
+import internal.parameters.AbstractParameter;
 
 import java.util.*;
 
@@ -19,19 +18,19 @@ import java.util.*;
  * This class is the help menu printer that is responsible for printing information about the correct usage of command
  * line options to the terminal.
  */
-class HelpMenu {
+public class HelpMenu {
 
     @SuppressWarnings("FieldCanBeLocal")
     private static int TERMINAL_WIDTH = 80;
-    private final Command command;
+    private final InternalCommand internalCommand;
 
     /**
      * Instantiates a new help menu that prints out usage help menus for a given command.
      *
-     * @param command the command
+     * @param internalCommand the command
      */
-    HelpMenu(Command command) {
-        this.command = command;
+    public HelpMenu(InternalCommand internalCommand) {
+        this.internalCommand = internalCommand;
     }
 
     /**
@@ -51,7 +50,7 @@ class HelpMenu {
      * @param error the error message
      * @return the error message and usage help
      */
-    String printUsage(String error) {
+    public String printUsage(String error) {
         return printError(error) + System.lineSeparator() + printUsage();
     }
 
@@ -63,28 +62,28 @@ class HelpMenu {
      * @param error          the error message
      * @return the error message and usage help
      */
-    String printUsage(String subcommandName, String error) {
+    public String printUsage(String subcommandName, String error) {
         StringBuilder result = new StringBuilder();
         result.append(printError(error));
 
         List<String> strings = new LinkedList<>();
-        strings.add(command.getName());
+        strings.add(internalCommand.getName());
         strings.add(subcommandName);
-        command.getSubcommand(subcommandName).getParameters().stream().filter(InternalParameter::isMandatory)
+        internalCommand.getSubcommand(subcommandName).getParameters().stream().filter(AbstractParameter::isMandatory)
                 .map(p -> "--" + p.getName() + "=<value>").forEach(strings::add);
-        command.getSubcommand(subcommandName).getParameters().stream().filter(p -> !p.isMandatory())
+        internalCommand.getSubcommand(subcommandName).getParameters().stream().filter(p -> !p.isMandatory())
                 .map(p -> "[--" + p.getName() + "=<value>]").forEach(strings::add);
 
         result.append(System.lineSeparator());
         result.append(printUsage(strings));
 
         result.append(System.lineSeparator());
-        result.append(
-                printIntendedBlock(Arrays.asList(command.getSubcommand(subcommandName).getDescription().split(" ")),
+        result.append(printIntendedBlock(
+                Arrays.asList(internalCommand.getSubcommand(subcommandName).getDescription().split(" ")),
                         0));
 
         result.append(System.lineSeparator());
-        result.append(printParameters(command.getSubcommand(subcommandName).getParameters()));
+        result.append(printParameters(internalCommand.getSubcommand(subcommandName).getParameters()));
 
         return result.toString();
     }
@@ -94,32 +93,33 @@ class HelpMenu {
      *
      * @return the error message and usage help
      */
-    String printUsage() {
+    public String printUsage() {
         StringBuilder result = new StringBuilder();
 
         List<String> strings = new LinkedList<>();
-        strings.add(command.getName());
-        command.getParameters().stream().filter(InternalParameter::isMandatory)
+        strings.add(internalCommand.getName());
+        internalCommand.getParameters().stream().filter(AbstractParameter::isMandatory)
                 .map(p -> "--" + p.getName() + "=<value>")
                 .forEach(strings::add);
-        command.getParameters().stream().filter(p -> !p.isMandatory()).map(p -> "[--" + p.getName() + "=<value>]")
+        internalCommand.getParameters().stream().filter(p -> !p.isMandatory())
+                .map(p -> "[--" + p.getName() + "=<value>]")
                 .forEach(strings::add);
-        if (!command.getSubcommands().isEmpty()) {
+        if (!internalCommand.getSubcommands().isEmpty()) {
             strings.add("<subcommand>");
             strings.add("[<args>]");
         }
         result.append(printUsage(strings));
 
         result.append(System.lineSeparator());
-        result.append(printIntendedBlock(Arrays.asList(command.getDescription().split(" ")), 0));
+        result.append(printIntendedBlock(Arrays.asList(internalCommand.getDescription().split(" ")), 0));
 
-        if (!command.getParameters().isEmpty()) {
+        if (!internalCommand.getParameters().isEmpty()) {
             result.append(System.lineSeparator());
-            result.append(printParameters(command.getParameters()));
+            result.append(printParameters(internalCommand.getParameters()));
         }
-        if (!command.getSubcommands().isEmpty()) {
+        if (!internalCommand.getSubcommands().isEmpty()) {
             result.append(System.lineSeparator());
-            result.append(printSubcommands(command.getSubcommands()));
+            result.append(printSubcommands(internalCommand.getSubcommands()));
         }
 
         return result.toString();
@@ -180,14 +180,14 @@ class HelpMenu {
      * @param parameters the parameters
      * @return the parameter block
      */
-    private String printParameters(Set<InternalParameter<?>> parameters) {
+    private String printParameters(Set<AbstractParameter<?>> parameters) {
         StringBuilder result = new StringBuilder();
         result.append("Options:").append(System.lineSeparator());
 
         //noinspection OptionalGetWithoutIsPresent
-        int maxNameWidth = parameters.stream().map(Parameter::getName).map(String::length)
+        int maxNameWidth = parameters.stream().map(AbstractParameter::getName).map(String::length)
                 .max(Comparator.comparing(Integer::intValue)).get();
-        for (InternalParameter parameter : parameters) {
+        for (AbstractParameter parameter : parameters) {
             List<String> parts = new LinkedList<>();
             parts.add(String.format("  --%1$-" + maxNameWidth + "s  ", parameter.getName()));
             if (!parameter.isMandatory()) {
@@ -210,14 +210,14 @@ class HelpMenu {
      * @param subcommands the subcommands
      * @return the subcommand block
      */
-    private String printSubcommands(Set<Subcommand> subcommands) {
+    private String printSubcommands(Set<InternalSubcommand> subcommands) {
         StringBuilder result = new StringBuilder();
         result.append("Subcommands:").append(System.lineSeparator());
 
         //noinspection OptionalGetWithoutIsPresent
-        int maxNameWidth = subcommands.stream().map(Subcommand::getName).map(String::length)
+        int maxNameWidth = subcommands.stream().map(InternalSubcommand::getName).map(String::length)
                 .max(Comparator.comparing(Integer::intValue)).get();
-        for (Subcommand subcommand : subcommands) {
+        for (InternalSubcommand subcommand : subcommands) {
             List<String> parts = new LinkedList<>();
             parts.add(String.format("  %1$-" + maxNameWidth + "s  ", subcommand.getName()));
             parts.addAll(Arrays.asList(subcommand.getDescription().split(" ")));
