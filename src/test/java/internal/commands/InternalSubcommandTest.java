@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 3/9/19 2:54 PM.
+ * This file is part of ProDisFuzz, modified on 3/13/19 12:17 AM.
  * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -147,9 +147,7 @@ public class InternalSubcommandTest {
         InternalSubcommand internalSubcommand = new InternalSubcommand("testname", "testdescription");
         internalSubcommand.add(new BooleanParameter("paramname1", "paramdescription1"));
         internalSubcommand.add(new StringParameter("paramname2", "paramdescription2"));
-        Parameter<Integer> parameter3 = new IntegerParameter("paramname3", "paramdescription3");
-        parameter3.setDefaultValue(4);
-        internalSubcommand.add(parameter3);
+        internalSubcommand.add(new IntegerParameter("paramname3", "paramdescription3").withDefaultValue(4));
         InternalSubcommand copy = internalSubcommand.copy();
         assertEquals(copy.getName(), "testname");
         assertEquals(copy.getDescription(), "testdescription");
@@ -163,7 +161,8 @@ public class InternalSubcommandTest {
     class DummyParameter implements Parameter<String> {
 
         @Override
-        public void setDefaultValue(String value) {
+        public DummyParameter withDefaultValue(String value) {
+            return this;
         }
     }
 }

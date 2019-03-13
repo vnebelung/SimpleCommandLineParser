@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 3/9/19 3:29 PM.
+ * This file is part of ProDisFuzz, modified on 3/13/19 12:40 AM.
  * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -36,22 +36,20 @@ public class AbstractParameterTest {
 
     @Test
     public void testSetValue1() throws ParameterException {
-        AbstractParameter<Integer> parameter = new IntegerParameter("", "");
-        parameter.setDefaultValue(6);
+        AbstractParameter<Integer> parameter = new IntegerParameter("", "").withDefaultValue(6);
         parameter.setValue("1");
         assertEquals(parameter.getValue().intValue(), 1);
     }
 
     @Test
-    public void testSetDefaultValue() {
-        AbstractParameter<Integer> parameter = new IntegerParameter("", "");
-        parameter.setDefaultValue(6);
+    public void testWithDefaultValue() {
+        AbstractParameter<Integer> parameter = new IntegerParameter("", "").withDefaultValue(6);
         assertEquals(parameter.getValue().intValue(), 6);
         assertFalse(parameter.isMandatory());
     }
 
     @Test
-    public void testSetInternalValue() {
+    public void testWithInternalValue() {
         AbstractParameter<Boolean> parameter = new BooleanParameter("", "");
         parameter.setInternalValue(true);
         assertTrue(parameter.getValue());
@@ -65,8 +63,7 @@ public class AbstractParameterTest {
 
     @Test
     public void testIsMandatory1() {
-        AbstractParameter<Boolean> parameter = new BooleanParameter("", "");
-        parameter.setDefaultValue(false);
+        AbstractParameter<Boolean> parameter = new BooleanParameter("", "").withDefaultValue(false);
         assertFalse(parameter.isMandatory());
     }
 

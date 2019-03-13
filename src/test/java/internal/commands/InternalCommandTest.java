@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 3/13/19 12:00 AM.
+ * This file is part of ProDisFuzz, modified on 3/13/19 12:17 AM.
  * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -76,9 +76,7 @@ public class InternalCommandTest {
     @Test
     public void testCopy() {
         InternalCommand internalCommand = new InternalCommand("testname", "testdescription");
-        Parameter<String> parameter = new StringParameter("paramname", "paramdescription");
-        parameter.setDefaultValue("paramvalue");
-        internalCommand.add(parameter);
+        internalCommand.add(new StringParameter("paramname", "paramdescription").withDefaultValue("paramvalue"));
         InternalCommand copy = internalCommand.copy();
         assertEquals(copy.getName(), "testname");
         assertEquals(copy.getDescription(), "testdescription");

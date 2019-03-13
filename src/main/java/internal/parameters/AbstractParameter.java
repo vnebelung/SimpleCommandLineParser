@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 3/13/19 12:01 AM.
+ * This file is part of ProDisFuzz, modified on 3/13/19 12:17 AM.
  * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -83,9 +83,10 @@ public abstract class AbstractParameter<T> implements Parameter<T>, ParsedParame
     }
 
     @Override
-    public void setDefaultValue(T value) {
+    public AbstractParameter<T> withDefaultValue(T value) {
         this.value = value;
         isMandatory = false;
+        return this;
     }
 
 }

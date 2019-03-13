@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 3/9/19 3:15 PM.
+ * This file is part of ProDisFuzz, modified on 3/13/19 12:34 AM.
  * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -13,7 +13,6 @@ import internal.commands.InternalSubcommand;
 import internal.parameters.BooleanParameter;
 import internal.parameters.IntegerParameter;
 import internal.parameters.StringParameter;
-import main.Parameter;
 import org.testng.annotations.Test;
 
 import java.util.LinkedList;
@@ -34,16 +33,14 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet.");
-        Parameter<Boolean> parameter1 = new BooleanParameter("parameter1",
+        internalCommand.add(new BooleanParameter("parameter1",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.");
-        parameter1.setDefaultValue(true);
-        internalCommand.add(parameter1);
+                        "sanctus est Lorem ipsum dolor sit amet.").withDefaultValue(true));
         internalCommand.add(new IntegerParameter("param2",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
@@ -112,16 +109,14 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet.");
-        Parameter<String> parameter3 = new StringParameter("parameter3",
+        internalSubcommand1.add(new StringParameter("parameter3",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.");
-        parameter3.setDefaultValue("text");
-        internalSubcommand1.add(parameter3);
+                        "sanctus est Lorem ipsum dolor sit amet.").withDefaultValue("text"));
         internalSubcommand1.add(new BooleanParameter("param4",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
@@ -139,16 +134,14 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet.");
-        Parameter<Integer> parameter5 = new IntegerParameter("parameter5",
+        internalSubcommand2.add(new IntegerParameter("parameter5",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.");
-        parameter5.setDefaultValue(5);
-        internalSubcommand2.add(parameter5);
+                        "sanctus est Lorem ipsum dolor sit amet.").withDefaultValue(5));
         internalSubcommand2.add(new StringParameter("param6",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
@@ -218,16 +211,14 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet.");
-        Parameter<String> parameter3 = new StringParameter("parameter3",
+        internalSubcommand1.add(new StringParameter("parameter3",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.");
-        parameter3.setDefaultValue("text");
-        internalSubcommand1.add(parameter3);
+                        "sanctus est Lorem ipsum dolor sit amet.").withDefaultValue("text"));
         internalSubcommand1.add(new BooleanParameter("param4",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
@@ -245,16 +236,14 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet.");
-        Parameter<Integer> parameter5 = new IntegerParameter("parameter5",
+        internalSubcommand2.add(new IntegerParameter("parameter5",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
                         " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.");
-        parameter5.setDefaultValue(5);
-        internalSubcommand2.add(parameter5);
+                        "sanctus est Lorem ipsum dolor sit amet.").withDefaultValue(5));
         internalSubcommand2.add(new StringParameter("param6",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
