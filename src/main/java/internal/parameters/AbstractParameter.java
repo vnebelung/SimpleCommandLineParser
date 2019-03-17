@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 3/13/19 12:17 AM.
+ * This file is part of ProDisFuzz, modified on 3/18/19 12:48 AM.
  * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -14,12 +14,14 @@ import main.ParsedParameter;
 
 /**
  * This class is an abstract parameter of the command line string used in the command line call. The format of this
- * string is as follows: COMMAND SUBCOMMAND --key1 value1 --key2 value2 ... The type parameter T is the class of the
+ * string is as follows: COMMAND SUBCOMMAND --key1 value1 --key2 value2 … The type parameter T is the class of the
  * parameter's value.
+ *
+ * @param <V> the class of the parameter's value
  */
-public abstract class AbstractParameter<T> implements Parameter<T>, ParsedParameter<T> {
+public abstract class AbstractParameter<V> implements Parameter<V>, ParsedParameter<V> {
 
-    private T value;
+    private V value;
     private String description;
     private boolean isMandatory;
     private String name;
@@ -46,7 +48,7 @@ public abstract class AbstractParameter<T> implements Parameter<T>, ParsedParame
     }
 
     @Override
-    public T getValue() {
+    public V getValue() {
         return value;
     }
 
@@ -64,7 +66,7 @@ public abstract class AbstractParameter<T> implements Parameter<T>, ParsedParame
      *
      * @param value the parameter's cast value
      */
-    void setInternalValue(T value) {
+    void setInternalValue(V value) {
         this.value = value;
     }
 
@@ -83,7 +85,7 @@ public abstract class AbstractParameter<T> implements Parameter<T>, ParsedParame
     }
 
     @Override
-    public AbstractParameter<T> withDefaultValue(T value) {
+    public AbstractParameter<V> withDefaultValue(V value) {
         this.value = value;
         isMandatory = false;
         return this;

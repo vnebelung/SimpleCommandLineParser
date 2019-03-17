@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 3/13/19 12:17 AM.
+ * This file is part of ProDisFuzz, modified on 3/18/19 12:48 AM.
  * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -10,8 +10,10 @@ package main;
 
 /**
  * This interface represents a parameter that can be attached to a (sub)command.
+ *
+ * @param <V> the class of the parameter's value
  */
-public interface Parameter<T> {
+public interface Parameter<V> {
 
     /**
      * Sets the default value for this parameter and returns the parameter. This will make the parameter an optional
@@ -21,6 +23,6 @@ public interface Parameter<T> {
      * @param value the default value
      * @return the parameter with the default value
      */
-    Parameter<T> withDefaultValue(T value);
+    Parameter<V> withDefaultValue(V value);
 
 }
