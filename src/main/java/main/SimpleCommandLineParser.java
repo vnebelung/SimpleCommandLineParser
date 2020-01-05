@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 3/10/19 8:08 PM.
- * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 05.01.20, 10:25.
+ * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * command line call. The format of this string is as follows: COMMAND SUBCOMMAND --key1 value1 --key2 value2…
  */
 @SuppressWarnings("WeakerAccess")
-public class CommandLine {
+public class SimpleCommandLineParser {
 
     private final static Pattern PARAMETER_FORMAT = Pattern.compile("--.+=.+");
     private InternalCommand command;
@@ -42,7 +42,7 @@ public class CommandLine {
      * @param commandName        the command's name
      * @param commandDescription the command's description for the help menu
      */
-    public CommandLine(String commandName, String commandDescription) {
+    public SimpleCommandLineParser(String commandName, String commandDescription) {
         command = new InternalCommand(commandName, commandDescription);
         helpMenu = new HelpMenu(command);
     }

@@ -1,18 +1,12 @@
 /*
- * This file is part of ProDisFuzz, modified on 3/12/19 8:15 PM.
- * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 05.01.20, 10:25.
+ * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
  */
 
-package internal.commands;/*
- * This file is part of ProDisFuzz, modified on 2/25/19 6:19 PM.
- * Copyright (c) 2013-2019 Volker Nebelung <vnebelung@prodisfuzz.net>
- * This work is free. You can redistribute it and/or modify it under the
- * terms of the Do What The Fuck You Want To Public License, Version 2,
- * as published by Sam Hocevar. See the COPYING file for more details.
- */
+package internal.commands;
 
 import internal.parameters.AbstractParameter;
 import main.*;
