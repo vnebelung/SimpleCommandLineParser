@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 04.04.20, 22:47.
+ * This file is part of ProDisFuzz, modified on 04.04.20, 23:25.
  * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -29,6 +29,7 @@ public class ParameterFactory {
      *
      * @param name        the parameter's name
      * @param description the parameter's description for the help menu
+     * @return the created boolean parameter
      */
     public static Parameter<Boolean> createBooleanParameter(String name, String description) {
         return new BooleanParameter(name, description);
@@ -42,6 +43,7 @@ public class ParameterFactory {
      *
      * @param name        the parameter's name
      * @param description the parameter's description for the help menu
+     * @return the created integer parameter
      */
     public static Parameter<Integer> createIntegerParameter(String name, String description) {
         return new IntegerParameter(name, description);
@@ -55,6 +57,7 @@ public class ParameterFactory {
      *
      * @param name        the parameter's name
      * @param description the parameter's description for the help menu
+     * @return the created string parameter
      */
     public static Parameter<String> createStringParameter(String name, String description) {
         return new StringParameter(name, description);

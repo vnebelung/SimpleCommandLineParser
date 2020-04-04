@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 04.04.20, 22:19.
+ * This file is part of ProDisFuzz, modified on 04.04.20, 23:25.
  * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -47,6 +47,8 @@ public class SimpleCommandLineParser {
      * Sets the command of this parser instance. Usually the command is the name of the executable file (or jar file)
      * that the user will call on the command line. Since this file name does not change and is always the same for
      * every call, you can only define one single command.
+     *
+     * @param command the command
      */
     public void setCommand(Command command) {
         if (command.getClass() != InternalCommand.class) {
