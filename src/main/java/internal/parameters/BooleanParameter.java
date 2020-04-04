@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 05.01.20, 10:25.
+ * This file is part of ProDisFuzz, modified on 02.04.20, 23:35.
  * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -27,13 +27,23 @@ public class BooleanParameter extends AbstractParameter<Boolean> {
 
     @Override
     public void setValue(String value) throws ParameterException {
+        if (value == null) {
+            throw new ParameterException("The parameter's value must not be null");
+        }
         if (value.isBlank()) {
             throw new ParameterException("The parameter's value must not be empty");
         }
         if (!value.toLowerCase().equals("true") && !value.toLowerCase().equals("false")) {
             throw new ParameterException("The parameter's value is not a valid boolean");
         }
-        setInternalValue(Boolean.valueOf(value));
+        setCastedValue(Boolean.valueOf(value.toLowerCase()));
+    }
+
+    @Override
+    public AbstractParameter<Boolean> copy() {
+        BooleanParameter result = new BooleanParameter(getName(), getDescription());
+        result.setCastedValue(getValue());
+        return result;
     }
 
 }

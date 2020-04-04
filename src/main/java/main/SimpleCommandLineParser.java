@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 05.01.20, 10:25.
+ * This file is part of ProDisFuzz, modified on 04.04.20, 22:19.
  * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -10,18 +10,11 @@ package main;
 
 import internal.commands.InternalCommand;
 import internal.commands.InternalSubcommand;
-import internal.help.HelpMenu;
+import internal.help.Menu;
 import internal.parameters.AbstractParameter;
-import internal.parameters.BooleanParameter;
-import internal.parameters.IntegerParameter;
-import internal.parameters.StringParameter;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * This class represents the command line parser, which handles the command, its subcommands and parameters used in a
@@ -30,75 +23,15 @@ import java.util.stream.Collectors;
 @SuppressWarnings("WeakerAccess")
 public class SimpleCommandLineParser {
 
-    private final static Pattern PARAMETER_FORMAT = Pattern.compile("--.+=.+");
+    private final static Pattern PARAMETER_FORMAT = Pattern.compile("--.+");
     private InternalCommand command;
-    private HelpMenu helpMenu;
+    private Menu helpMenu;
 
     /**
-     * Creates a command line parser with a command with a given name and description. Usually the command is the name
-     * of the executable file (or jar file) that the user will call on the command line. Since this file name does not
-     * change and is always the same for every call, you can only define one single command.
-     *
-     * @param commandName        the command's name
-     * @param commandDescription the command's description for the help menu
+     * Creates a command line parser.
      */
-    public SimpleCommandLineParser(String commandName, String commandDescription) {
-        command = new InternalCommand(commandName, commandDescription);
-        helpMenu = new HelpMenu(command);
-    }
-
-    /**
-     * Creates a subcommand with a given name and description. The subcommand is used to distinguish different
-     * operations that a user can choose on the command line. Every subcommand has its independent set of parameters.
-     *
-     * @param name        the subcommand's name
-     * @param description the subcommand's description for the help menu
-     * @return the created subcommand
-     */
-    public Subcommand createSubcommand(String name, String description) {
-        return new InternalSubcommand(name, description);
-    }
-
-    /**
-     * Creates a boolean parameter with a given name and description. The parameter must be attached to a command or a
-     * subcommand and is used to define a key value pair that a user can use to submit a boolean input. The key is
-     * defined by the given name. The parameter is by default mandatory. If the parameter shall be optional, you must
-     * set its default value.
-     *
-     * @param name        the parameter's name
-     * @param description the parameter's description for the help menu
-     * @return the created parameter
-     */
-    public Parameter<Boolean> createBooleanParameter(String name, String description) {
-        return new BooleanParameter(name, description);
-    }
-
-    /**
-     * Creates an integer parameter with a given name and description. The parameter must be attached to a command or a
-     * subcommand and is used to define a key value pair that a user can use to submit an integer input. The key is
-     * defined by the given name. The parameter is by default mandatory. If the parameter shall be optional, you must
-     * set its default value.
-     *
-     * @param name        the parameter's name
-     * @param description the parameter's description for the help menu
-     * @return the created parameter
-     */
-    public Parameter<Integer> createIntegerParameter(String name, String description) {
-        return new IntegerParameter(name, description);
-    }
-
-    /**
-     * Creates a string parameter with a given name and description. The parameter must be attached to a command or a
-     * subcommand and is used to define a key value pair that a user can use to submit a string input. The key is
-     * defined by the given name. The parameter is by default mandatory. If the parameter shall be optional, you must
-     * set its default value.
-     *
-     * @param name        the parameter's name
-     * @param description the parameter's description for the help menu
-     * @return the created parameter
-     */
-    public Parameter<String> createStringParameter(String name, String description) {
-        return new StringParameter(name, description);
+    public SimpleCommandLineParser() {
+        helpMenu = new Menu();
     }
 
     /**
@@ -111,12 +44,24 @@ public class SimpleCommandLineParser {
     }
 
     /**
+     * Sets the command of this parser instance. Usually the command is the name of the executable file (or jar file)
+     * that the user will call on the command line. Since this file name does not change and is always the same for
+     * every call, you can only define one single command.
+     */
+    public void setCommand(Command command) {
+        if (command.getClass() != InternalCommand.class) {
+            throw new IllegalArgumentException("Command was not created by the command line parser");
+        }
+        this.command = (InternalCommand) command;
+    }
+
+    /**
      * Prints formatted usage information into the output string. This only works if the command is already specified.
      *
      * @return the usage help
      */
     public String printHelp() {
-        return helpMenu.printUsage();
+        return helpMenu.printUsage(command);
     }
 
     /**
@@ -134,30 +79,30 @@ public class SimpleCommandLineParser {
         List<String> arguments = new LinkedList<>(Arrays.asList(args));
 
         // If a subcommand must be present, check for its existence
-        if (command.getSubcommands().size() > 0) {
+        if (!command.getSubcommands().isEmpty()) {
 
             // Parse the subcommand
             try {
                 result.add(parseSubcommand(arguments).copy());
             } catch (ParameterException e) {
-                throw new ParameterException(helpMenu.printUsage(e.getMessage()));
+                throw new ParameterException(helpMenu.printUsage(command, e.getMessage()));
             }
 
-            InternalSubcommand subcommand = result.getSubcommands().iterator().next();
+            InternalSubcommand subcommand = result.getSubcommand();
 
             try {
                 // Parse all parameters of the subcommand
                 parseParameters(arguments, subcommand.getParameters());
             } catch (ParameterException e) {
-                throw new ParameterException(helpMenu.printUsage(subcommand.getName(), e.getMessage()));
+                throw new ParameterException(helpMenu.printUsage(command, subcommand, e.getMessage()));
             }
 
             // Check if all parameters have values not null. A null value means that a mandatory parameter was not
             // being set via the command line parameters
-            for (AbstractParameter<?> parameter : subcommand.getParameters()) {
+            for (Parameter<?> parameter : subcommand.getParameters()) {
                 if (parameter.getValue() == null) {
                     String error = "Parameter '" + parameter.getName() + "' is missing";
-                    throw new ParameterException(helpMenu.printUsage(subcommand.getName(), error));
+                    throw new ParameterException(helpMenu.printUsage(command, subcommand, error));
                 }
             }
 
@@ -165,17 +110,17 @@ public class SimpleCommandLineParser {
 
             try {
                 // Parse all parameters of the command
-                parseParameters(arguments, command.getParameters());
+                parseParameters(arguments, result.getParameters());
             } catch (ParameterException e) {
-                throw new ParameterException(helpMenu.printUsage(e.getMessage()));
+                throw new ParameterException(helpMenu.printUsage(command, e.getMessage()));
             }
 
             // Check if all parameters have values not null. A null value means that a mandatory parameter was not
             // being set via the command line parameters
-            for (AbstractParameter<?> parameter : result.getParameters()) {
+            for (Parameter<?> parameter : result.getParameters()) {
                 if (parameter.getValue() == null) {
                     String error = "Parameter '" + parameter.getName() + "' is missing";
-                    throw new ParameterException(helpMenu.printUsage(error));
+                    throw new ParameterException(helpMenu.printUsage(command, error));
                 }
             }
 
@@ -195,16 +140,21 @@ public class SimpleCommandLineParser {
      * @throws ParameterException if an arguments contain an unknown parameter name, an argument format is invalid, or a
      *                            argument's value cannot be parsed into the parameter's type
      */
-    private void parseParameters(List<String> arguments, Set<AbstractParameter<?>> parameters) throws
-            ParameterException {
-        for (String argument : arguments) {
-            if (!PARAMETER_FORMAT.matcher(argument).matches()) {
-                throw new ParameterException("Parameter '" + argument + "' has no valid --key=value structure");
+    private void parseParameters(List<String> arguments, Set<Parameter<?>> parameters) throws ParameterException {
+        Iterator<String> iterator = arguments.iterator();
+        while (iterator.hasNext()) {
+            String arg = iterator.next();
+            if (!PARAMETER_FORMAT.matcher(arg).matches()) {
+                throw new ParameterException("Parameter '%s' has no valid format", arg);
             }
-            String key = argument.substring(2, argument.indexOf('='));
-            String value = argument.substring(argument.indexOf('=') + 1);
+            String key = arg.substring(2);
+            if (!iterator.hasNext()) {
+                throw new ParameterException("Parameter '%s' has no value", key);
+            }
+            String value = iterator.next();
             parameters.stream().filter(p -> p.getName().equals(key)).findFirst()
-                    .orElseThrow(() -> new ParameterException("Unknown parameter '" + key + "'")).setValue(value);
+                    .map(parameter -> (AbstractParameter<?>) parameter)
+                    .orElseThrow(() -> new ParameterException("Unknown parameter '%s'", key)).setValue(value);
         }
     }
 
@@ -221,11 +171,12 @@ public class SimpleCommandLineParser {
         if (arguments.isEmpty()) {
             throw new ParameterException("No subcommand found");
         }
-        if (!command.getSubcommands().stream().map(InternalSubcommand::getName).collect(Collectors.toSet())
-                .contains(arguments.get(0))) {
-            throw new ParameterException("Unknown subcommand '" + arguments.get(0) + "'");
+        String subcommandName = arguments.remove(0);
+        InternalSubcommand result = command.getSubcommand(subcommandName);
+        if (result == null) {
+            throw new ParameterException("Unknown subcommand '%s'", arguments.get(0));
         }
-        return command.getSubcommand(arguments.remove(0));
+        return result;
     }
 
 }

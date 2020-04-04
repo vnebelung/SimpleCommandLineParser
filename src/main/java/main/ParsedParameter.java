@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 05.01.20, 10:25.
+ * This file is part of ProDisFuzz, modified on 04.04.20, 22:47.
  * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -28,4 +28,5 @@ public interface ParsedParameter<V> {
      * @return the parameter's value
      */
     V getValue();
+
 }

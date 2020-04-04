@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 05.01.20, 10:25.
+ * This file is part of ProDisFuzz, modified on 04.04.20, 21:53.
  * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -9,17 +9,20 @@
 package internal.commands;
 
 import internal.parameters.AbstractParameter;
-import main.*;
+import main.Command;
+import main.Parameter;
+import main.ParsedCommand;
+import main.Subcommand;
 
 import java.util.*;
 
 /**
  * This class is a command of the command line string. The format of this string is as follows: COMMAND SUBCOMMAND
- * --key1=value1 --key2=value2 ...
+ * --key1 value1 --key2 value2 ...
  */
 public class InternalCommand extends InternalSubcommand implements Command, ParsedCommand {
 
-    private TreeMap<String, InternalSubcommand> subcommands = new TreeMap<>();
+    private Set<InternalSubcommand> subcommands = new HashSet<>();
 
     /**
      * Instantiates a new command.
@@ -39,11 +42,11 @@ public class InternalCommand extends InternalSubcommand implements Command, Pars
         if (!getParameters().isEmpty()) {
             throw new IllegalStateException("Subcommand cannot be added because this command already has parameters");
         }
-        if (!subcommand.getClass().getSimpleName().equals("InternalSubcommand")) {
+        if (subcommand.getClass() != InternalSubcommand.class) {
             throw new IllegalArgumentException("Parameter was not created by the command line parser");
         }
         InternalSubcommand castSubcommand = (InternalSubcommand) subcommand;
-        subcommands.put(castSubcommand.getName(), castSubcommand);
+        subcommands.add(castSubcommand);
     }
 
     @Override
@@ -54,20 +57,11 @@ public class InternalCommand extends InternalSubcommand implements Command, Pars
         super.add(parameter);
     }
 
-    /**
-     * Returns all subcommands ordered by their name.
-     *
-     * @return the command's subcommands
-     */
-    public Set<InternalSubcommand> getSubcommands() {
-        Set<InternalSubcommand> result = new TreeSet<>(Comparator.comparing(InternalSubcommand::getName));
-        result.addAll(subcommands.values());
-        return result;
-    }
-
     @Override
-    public InternalSubcommand getSubcommand(String name) {
-        return subcommands.get(name);
+    public Set<Subcommand> getSubcommands() {
+        Set<InternalSubcommand> result = new TreeSet<>(Comparator.comparing(InternalSubcommand::getName));
+        result.addAll(subcommands);
+        return Collections.unmodifiableSet(result);
     }
 
     /**
@@ -78,23 +72,22 @@ public class InternalCommand extends InternalSubcommand implements Command, Pars
      */
     public InternalCommand copy() {
         InternalCommand result = new InternalCommand(getName(), getDescription());
-        for (Map.Entry<String, AbstractParameter<Boolean>> nameToParameter : namesToBooleanParameters.entrySet()) {
-            result.namesToBooleanParameters.put(nameToParameter.getKey(), nameToParameter.getValue());
-        }
-        for (Map.Entry<String, AbstractParameter<String>> nameToParameter : namesToStringParameters.entrySet()) {
-            result.namesToStringParameters.put(nameToParameter.getKey(), nameToParameter.getValue());
-        }
-        for (Map.Entry<String, AbstractParameter<Integer>> nameToParameter : namesToIntegerParameters.entrySet()) {
-            result.namesToIntegerParameters.put(nameToParameter.getKey(), nameToParameter.getValue());
-        }
+        getParameters().forEach(parameter -> result.add(((AbstractParameter<?>) parameter).copy()));
         return result;
     }
 
+    /**
+     * Returns the subcommand with the given name.
+     *
+     * @param name the subcommand's name
+     * @return the subcommand or null if a subcommand with the given name cannot be found
+     */
+    public InternalSubcommand getSubcommand(String name) {
+        return subcommands.stream().filter(subcommand -> subcommand.getName().equals(name)).findFirst().orElse(null);
+    }
+
     @Override
-    public ParsedSubcommand getSubcommand() {
-        if (subcommands.isEmpty()) {
-            return null;
-        }
-        return subcommands.firstEntry().getValue();
+    public InternalSubcommand getSubcommand() {
+        return subcommands.stream().findFirst().orElse(null);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 05.01.20, 10:25.
+ * This file is part of ProDisFuzz, modified on 01.04.20, 19:42.
  * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -9,16 +9,40 @@
 package main;
 
 /**
- * This interface represents a parsed command of a command line string. The parsed command summarizes
+ * This interface represents a parsed command of a command line string.
  */
 public interface ParsedCommand extends ParsedSubcommand {
 
     /**
      * Returns the parsed subcommand of this command that was submitted by the user via the command line. If the user
-     * had not provided a subcommand, the return value will be null.
+     * had not defined at least one  subcommand, the return value will be null.
      *
      * @return the user-provided subcommand or null if no subcommand is found
      */
     ParsedSubcommand getSubcommand();
+
+    /**
+     * Returns the integer parameter with the given name that are assigned to this command.
+     *
+     * @param name the parameter's name
+     * @return the integer parameter with the given name
+     */
+    ParsedParameter<Integer> getIntegerParameter(String name);
+
+    /**
+     * Returns the boolean parameter with the given name that are assigned to this command.
+     *
+     * @param name the parameter's name
+     * @return the boolean parameter with the given name or null if no boolean parameter is found
+     */
+    ParsedParameter<Boolean> getBooleanParameter(String name);
+
+    /**
+     * Returns the string parameter with the given name that are assigned to this command.
+     *
+     * @param name the parameter's name
+     * @return the string parameter with the given name or null if no string parameter is found
+     */
+    ParsedParameter<String> getStringParameter(String name);
 
 }

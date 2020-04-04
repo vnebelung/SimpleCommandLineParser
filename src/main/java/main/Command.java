@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 05.01.20, 10:25.
+ * This file is part of ProDisFuzz, modified on 04.04.20, 22:47.
  * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -8,11 +8,13 @@
 
 package main;
 
+import java.util.Set;
+
 /**
  * This interface represents a command of a command line string. A command line string must have the following form:
- * COMMAND SUBCOMMAND --key1=value1 --key2=value2… Usually COMMAND is the name of the executable file (or jar file) that
- * the user will call on the command line. Since this file name does not change and is always the same for every call,
- * you can only define one single command.
+ * COMMAND SUBCOMMAND --key1 value1 --key2 value2 … Usually COMMAND is the name of the executable file (or jar file)
+ * that the user will call on the command line. Since this file name does not change and is always the same for every
+ * call, you can only define one single command.
  */
 public interface Command extends Subcommand {
 
@@ -22,26 +24,24 @@ public interface Command extends Subcommand {
      * either subcommands or parameters, an illegal state exception is thrown if this command has parameters.
      *
      * @param subcommand the subcommand to be added
+     * @throws IllegalStateException if this command already has parameters
      */
     void add(Subcommand subcommand) throws IllegalStateException;
 
     /**
-     * Adds a parameter to this command. The given parameter is now part of the set of parameters that a user can or
-     * must use (depending on whether the given parameter has a default value) during executing the command line.
-     * Because a command can have either subcommands or parameters, an illegal state exception is thrown if this command
-     * has a subcommand.
+     * Adds a parameter to this command.
      *
      * @param parameter the parameter to be added
      */
-    @Override
-    void add(Parameter<?> parameter) throws IllegalStateException;
+    void add(Parameter<?> parameter);
 
     /**
-     * Returns the subcommand with the given name.
+     * Returns the subcommands of this command ordered by their name. If the command has no subcommands, an empty set
+     * is returned.
      *
-     * @param name the subcommand's name
-     * @return the subcommand with the given name or null if no subcommand is found
+     * @return the command's subcommands
      */
-    Subcommand getSubcommand(String name);
+    Set<Subcommand> getSubcommands();
+
 
 }

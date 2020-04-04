@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 05.01.20, 10:25.
+ * This file is part of ProDisFuzz, modified on 04.04.20, 13:34.
  * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -27,10 +27,20 @@ public class StringParameter extends AbstractParameter<String> {
 
     @Override
     public void setValue(String value) throws ParameterException {
+        if (value == null) {
+            throw new ParameterException("The parameter's value must not be null");
+        }
         if (value.isBlank()) {
             throw new ParameterException("The parameter's value must not be empty");
         }
-        setInternalValue(value);
+        setCastedValue(value);
+    }
+
+    @Override
+    public AbstractParameter<String> copy() {
+        StringParameter result = new StringParameter(getName(), getDescription());
+        result.setCastedValue(getValue());
+        return result;
     }
 
 }

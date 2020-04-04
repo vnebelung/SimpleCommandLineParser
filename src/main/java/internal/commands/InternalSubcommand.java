@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 05.01.20, 10:25.
+ * This file is part of ProDisFuzz, modified on 04.04.20, 22:47.
  * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -21,13 +21,13 @@ import java.util.*;
 
 /**
  * This class is a subcommand of the command line string. The format of this string is as follows: COMMAND SUBCOMMAND
- * --key1=value1 --key2=value2 ...
+ * --key1 value1 --key2 value2 ...
  */
 public class InternalSubcommand implements Subcommand, ParsedSubcommand {
 
-    Map<String, AbstractParameter<Integer>> namesToIntegerParameters = new TreeMap<>();
-    Map<String, AbstractParameter<String>> namesToStringParameters = new TreeMap<>();
-    Map<String, AbstractParameter<Boolean>> namesToBooleanParameters = new TreeMap<>();
+    private Set<AbstractParameter<Integer>> integerParameters = new HashSet<>();
+    private Set<AbstractParameter<String>> stringParameters = new HashSet<>();
+    private Set<AbstractParameter<Boolean>> booleanParameters = new HashSet<>();
     private String description;
     private String name;
 
@@ -38,8 +38,29 @@ public class InternalSubcommand implements Subcommand, ParsedSubcommand {
      * @param description the subcommand's description for the help menu
      */
     public InternalSubcommand(String name, String description) {
+        if (name == null) {
+            throw new IllegalArgumentException("The subcommand's name must not be null");
+        }
+        if (name.isBlank()) {
+            throw new IllegalArgumentException("The subcommand's name must not be empty");
+        }
+        if (description == null) {
+            throw new IllegalArgumentException("The subcommand's description must not be empty");
+        }
+        if (description.isBlank()) {
+            throw new IllegalArgumentException("The subcommand's description must not be empty");
+        }
         this.name = name;
         this.description = description;
+    }
+
+    @Override
+    public Set<Parameter<?>> getParameters() {
+        Set<AbstractParameter<?>> results = new TreeSet<>(Comparator.comparing(AbstractParameter::getName));
+        results.addAll(integerParameters);
+        results.addAll(stringParameters);
+        results.addAll(booleanParameters);
+        return Collections.unmodifiableSet(results);
     }
 
     @Override
@@ -47,65 +68,46 @@ public class InternalSubcommand implements Subcommand, ParsedSubcommand {
         if (parameter == null) {
             throw new IllegalArgumentException("Parameter must not be null");
         }
-        switch (parameter.getClass().getSimpleName()) {
-            case "IntegerParameter":
-                IntegerParameter integerParameter = (IntegerParameter) parameter;
-                namesToIntegerParameters.put(integerParameter.getName(), integerParameter);
-                namesToStringParameters.remove(integerParameter.getName());
-                namesToBooleanParameters.remove(integerParameter.getName());
-                break;
-            case "BooleanParameter":
-                BooleanParameter booleanParameter = (BooleanParameter) parameter;
-                namesToIntegerParameters.remove(booleanParameter.getName());
-                namesToStringParameters.remove(booleanParameter.getName());
-                namesToBooleanParameters.put(booleanParameter.getName(), booleanParameter);
-                break;
-            case "StringParameter":
-                StringParameter stringParameter = (StringParameter) parameter;
-                namesToIntegerParameters.remove(stringParameter.getName());
-                namesToStringParameters.put(stringParameter.getName(), stringParameter);
-                namesToBooleanParameters.remove(stringParameter.getName());
-                break;
-            default:
-                throw new IllegalArgumentException("Parameter was not created by the command line parser");
+        if (parameter.getClass() == IntegerParameter.class) {
+            IntegerParameter integerParameter = (IntegerParameter) parameter;
+            integerParameters.add(integerParameter);
+            stringParameters.removeIf(p -> p.getName().equals(parameter.getName()));
+            booleanParameters.removeIf(p -> p.getName().equals(parameter.getName()));
+        } else if (parameter.getClass() == BooleanParameter.class) {
+            BooleanParameter booleanParameter = (BooleanParameter) parameter;
+            integerParameters.removeIf(p -> p.getName().equals(parameter.getName()));
+            stringParameters.removeIf(p -> p.getName().equals(parameter.getName()));
+            booleanParameters.add(booleanParameter);
+        } else if (parameter.getClass() == StringParameter.class) {
+            StringParameter stringParameter = (StringParameter) parameter;
+            integerParameters.removeIf(p -> p.getName().equals(parameter.getName()));
+            stringParameters.add(stringParameter);
+            booleanParameters.removeIf(p -> p.getName().equals(parameter.getName()));
+        } else {
+            throw new IllegalArgumentException("Parameter was not created by the command line parser");
         }
     }
 
-    /**
-     * Returns the subcommand's description.
-     *
-     * @return the description of the subcommand
-     */
+    @Override
     public String getDescription() {
         return description;
     }
 
-    /**
-     * Returns all parameters ordered by their name.
-     *
-     * @return the parameters of this subcommand
-     */
-    public Set<AbstractParameter<?>> getParameters() {
-        Set<AbstractParameter<?>> result = new TreeSet<>(Comparator.comparing(AbstractParameter::getName));
-        result.addAll(namesToIntegerParameters.values());
-        result.addAll(namesToStringParameters.values());
-        result.addAll(namesToBooleanParameters.values());
-        return result;
-    }
-
     @Override
     public ParsedParameter<Integer> getIntegerParameter(String name) {
-        return namesToIntegerParameters.get(name);
+        return integerParameters.stream().filter(parameter -> parameter.getName().equals(name)).findFirst()
+                .orElse(null);
     }
 
     @Override
     public ParsedParameter<Boolean> getBooleanParameter(String name) {
-        return namesToBooleanParameters.get(name);
+        return booleanParameters.stream().filter(parameter -> parameter.getName().equals(name)).findFirst()
+                .orElse(null);
     }
 
     @Override
     public ParsedParameter<String> getStringParameter(String name) {
-        return namesToStringParameters.get(name);
+        return stringParameters.stream().filter(parameter -> parameter.getName().equals(name)).findFirst().orElse(null);
     }
 
     @Override
@@ -121,15 +123,26 @@ public class InternalSubcommand implements Subcommand, ParsedSubcommand {
      */
     public InternalSubcommand copy() {
         InternalSubcommand result = new InternalSubcommand(name, description);
-        for (Map.Entry<String, AbstractParameter<Boolean>> nameToParameter : namesToBooleanParameters.entrySet()) {
-            result.namesToBooleanParameters.put(nameToParameter.getKey(), nameToParameter.getValue());
-        }
-        for (Map.Entry<String, AbstractParameter<String>> nameToParameter : namesToStringParameters.entrySet()) {
-            result.namesToStringParameters.put(nameToParameter.getKey(), nameToParameter.getValue());
-        }
-        for (Map.Entry<String, AbstractParameter<Integer>> nameToParameter : namesToIntegerParameters.entrySet()) {
-            result.namesToIntegerParameters.put(nameToParameter.getKey(), nameToParameter.getValue());
-        }
+        booleanParameters.forEach(parameter -> result.booleanParameters.add(parameter.copy()));
+        integerParameters.forEach(parameter -> result.integerParameters.add(parameter.copy()));
+        stringParameters.forEach(parameter -> result.stringParameters.add(parameter.copy()));
         return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof InternalSubcommand)) {
+            return false;
+        }
+        InternalSubcommand that = (InternalSubcommand) o;
+        return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 05.01.20, 10:25.
+ * This file is part of ProDisFuzz, modified on 04.04.20, 22:47.
  * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 import static org.testng.Assert.assertEquals;
 
-public class HelpMenuTest {
+public class MenuTest {
 
     @Test
     public void testPrintUsage() {
@@ -40,7 +40,7 @@ public class HelpMenuTest {
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.").withDefaultValue(true));
+                        "sanctus est Lorem ipsum dolor sit amet.").makeOptional(true));
         internalCommand.add(new IntegerParameter("param2",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
@@ -49,12 +49,12 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet."));
-        HelpMenu helpMenu = new HelpMenu(internalCommand);
+        Menu helpMenu = new Menu();
 
         List<String> reference = new LinkedList<>();
         reference.add("Error: texterror");
         reference.add("");
-        reference.add("Usage: commandname --param2=<value> [--parameter1=<value>]");
+        reference.add("Usage: commandname --param2 <value> [--parameter1 <value>]");
         reference.add("");
         reference.add("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod");
         reference.add("tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At");
@@ -88,7 +88,7 @@ public class HelpMenuTest {
         reference.add("                takimata sanctus est Lorem ipsum dolor sit amet. The default");
         reference.add("                value is 'true'.");
 
-        assertEquals(helpMenu.printUsage("texterror").lines().collect(Collectors.toList()), reference);
+        assertEquals(helpMenu.printUsage(internalCommand, "texterror").lines().collect(Collectors.toList()), reference);
     }
 
     @Test
@@ -116,7 +116,7 @@ public class HelpMenuTest {
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.").withDefaultValue("text"));
+                        "sanctus est Lorem ipsum dolor sit amet.").makeOptional("text"));
         internalSubcommand1.add(new BooleanParameter("param4",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
@@ -141,7 +141,7 @@ public class HelpMenuTest {
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.").withDefaultValue(5));
+                        "sanctus est Lorem ipsum dolor sit amet.").makeOptional(5));
         internalSubcommand2.add(new StringParameter("param6",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
@@ -151,12 +151,12 @@ public class HelpMenuTest {
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet."));
         internalCommand.add(internalSubcommand2);
-        HelpMenu helpMenu = new HelpMenu(internalCommand);
+        Menu helpMenu = new Menu();
 
         List<String> reference = new LinkedList<>();
         reference.add("Error: texterror");
         reference.add("");
-        reference.add("Usage: commandname subcommand1 --param4=<value> [--parameter3=<value>]");
+        reference.add("Usage: commandname subcommand1 --param4 <value> [--parameter3 <value>]");
         reference.add("");
         reference.add("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod");
         reference.add("tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At");
@@ -190,7 +190,8 @@ public class HelpMenuTest {
         reference.add("                takimata sanctus est Lorem ipsum dolor sit amet. The default");
         reference.add("                value is 'text'.");
 
-        assertEquals(helpMenu.printUsage("subcommand1", "texterror").lines().collect(Collectors.toList()), reference);
+        assertEquals(helpMenu.printUsage(internalCommand, internalSubcommand1, "texterror").lines()
+                .collect(Collectors.toList()), reference);
     }
 
     @Test
@@ -218,7 +219,7 @@ public class HelpMenuTest {
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.").withDefaultValue("text"));
+                        "sanctus est Lorem ipsum dolor sit amet.").makeOptional("text"));
         internalSubcommand1.add(new BooleanParameter("param4",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
@@ -243,7 +244,7 @@ public class HelpMenuTest {
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.").withDefaultValue(5));
+                        "sanctus est Lorem ipsum dolor sit amet.").makeOptional(5));
         internalSubcommand2.add(new StringParameter("param6",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
@@ -253,7 +254,7 @@ public class HelpMenuTest {
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet."));
         internalCommand.add(internalSubcommand2);
-        HelpMenu helpMenu = new HelpMenu(internalCommand);
+        Menu helpMenu = new Menu();
 
         List<String> reference = new LinkedList<>();
         reference.add("Error: texterror");
@@ -291,7 +292,7 @@ public class HelpMenuTest {
         reference.add("               rebum. Stet clita kasd gubergren, no sea takimata sanctus est");
         reference.add("               Lorem ipsum dolor sit amet.");
 
-        assertEquals(helpMenu.printUsage("texterror").lines().collect(Collectors.toList()), reference);
+        assertEquals(helpMenu.printUsage(internalCommand, "texterror").lines().collect(Collectors.toList()), reference);
     }
 
     @Test
@@ -304,7 +305,7 @@ public class HelpMenuTest {
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
                         "sanctus est Lorem ipsum dolor sit amet.");
-        HelpMenu helpMenu = new HelpMenu(internalCommand);
+        Menu helpMenu = new Menu();
 
         List<String> reference = new LinkedList<>();
         reference.add("Error: texterror");
@@ -320,7 +321,7 @@ public class HelpMenuTest {
         reference.add("et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata");
         reference.add("sanctus est Lorem ipsum dolor sit amet.");
 
-        assertEquals(helpMenu.printUsage("texterror").lines().collect(Collectors.toList()), reference);
+        assertEquals(helpMenu.printUsage(internalCommand, "texterror").lines().collect(Collectors.toList()), reference);
     }
 
 }
