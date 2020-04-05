@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 04.04.20, 22:47.
+ * This file is part of ProDisFuzz, modified on 05.04.20, 00:11.
  * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -64,25 +64,22 @@ public class InternalSubcommand implements Subcommand, ParsedSubcommand {
     }
 
     @Override
-    public void add(Parameter<?> parameter) {
+    public boolean add(Parameter<?> parameter) {
         if (parameter == null) {
             throw new IllegalArgumentException("Parameter must not be null");
         }
+        if (getParameters().contains(parameter)) {
+            return false;
+        }
         if (parameter.getClass() == IntegerParameter.class) {
             IntegerParameter integerParameter = (IntegerParameter) parameter;
-            integerParameters.add(integerParameter);
-            stringParameters.removeIf(p -> p.getName().equals(parameter.getName()));
-            booleanParameters.removeIf(p -> p.getName().equals(parameter.getName()));
+            return integerParameters.add(integerParameter);
         } else if (parameter.getClass() == BooleanParameter.class) {
             BooleanParameter booleanParameter = (BooleanParameter) parameter;
-            integerParameters.removeIf(p -> p.getName().equals(parameter.getName()));
-            stringParameters.removeIf(p -> p.getName().equals(parameter.getName()));
-            booleanParameters.add(booleanParameter);
+            return booleanParameters.add(booleanParameter);
         } else if (parameter.getClass() == StringParameter.class) {
             StringParameter stringParameter = (StringParameter) parameter;
-            integerParameters.removeIf(p -> p.getName().equals(parameter.getName()));
-            stringParameters.add(stringParameter);
-            booleanParameters.removeIf(p -> p.getName().equals(parameter.getName()));
+            return stringParameters.add(stringParameter);
         } else {
             throw new IllegalArgumentException("Parameter was not created by the command line parser");
         }

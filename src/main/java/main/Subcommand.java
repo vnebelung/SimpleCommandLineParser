@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 04.04.20, 22:47.
+ * This file is part of ProDisFuzz, modified on 04.04.20, 23:34.
  * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -27,8 +27,9 @@ public interface Subcommand {
      * Adds a parameter to this subcommand.
      *
      * @param parameter the parameter to be added
+     * @return true if this subcommand did not already contain the given parameter
      */
-    void add(Parameter<?> parameter);
+    boolean add(Parameter<?> parameter);
 
     /**
      * Returns the description of this subcommand.

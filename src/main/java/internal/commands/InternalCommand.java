@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 04.04.20, 21:53.
+ * This file is part of ProDisFuzz, modified on 04.04.20, 23:34.
  * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -35,7 +35,7 @@ public class InternalCommand extends InternalSubcommand implements Command, Pars
     }
 
     @Override
-    public void add(Subcommand subcommand) {
+    public boolean add(Subcommand subcommand) {
         if (subcommand == null) {
             throw new IllegalArgumentException("Subcommand must not be null");
         }
@@ -46,15 +46,15 @@ public class InternalCommand extends InternalSubcommand implements Command, Pars
             throw new IllegalArgumentException("Parameter was not created by the command line parser");
         }
         InternalSubcommand castSubcommand = (InternalSubcommand) subcommand;
-        subcommands.add(castSubcommand);
+        return subcommands.add(castSubcommand);
     }
 
     @Override
-    public void add(Parameter<?> parameter) {
+    public boolean add(Parameter<?> parameter) {
         if (!subcommands.isEmpty()) {
             throw new IllegalStateException("Parameter cannot be added because this command already has subcommands");
         }
-        super.add(parameter);
+        return super.add(parameter);
     }
 
     @Override

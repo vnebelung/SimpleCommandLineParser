@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 04.04.20, 22:47.
+ * This file is part of ProDisFuzz, modified on 04.04.20, 23:34.
  * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -24,16 +24,18 @@ public interface Command extends Subcommand {
      * either subcommands or parameters, an illegal state exception is thrown if this command has parameters.
      *
      * @param subcommand the subcommand to be added
+     * @return true if this command did not already contain the given subcommand
      * @throws IllegalStateException if this command already has parameters
      */
-    void add(Subcommand subcommand) throws IllegalStateException;
+    boolean add(Subcommand subcommand) throws IllegalStateException;
 
     /**
      * Adds a parameter to this command.
      *
      * @param parameter the parameter to be added
+     * @return true if this command did not already contain the given parameter
      */
-    void add(Parameter<?> parameter);
+    boolean add(Parameter<?> parameter);
 
     /**
      * Returns the subcommands of this command ordered by their name. If the command has no subcommands, an empty set

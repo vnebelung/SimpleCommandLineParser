@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 04.04.20, 22:50.
+ * This file is part of ProDisFuzz, modified on 05.04.20, 10:32.
  * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -23,7 +23,7 @@ public class InternalSubcommandTest {
     @Test
     public void testAdd() {
         InternalSubcommand internalSubcommand = new InternalSubcommand("subcommandname", "subcommanddescription");
-        internalSubcommand.add(new IntegerParameter("parametername", "parameterdescription1"));
+        assertTrue(internalSubcommand.add(new IntegerParameter("parametername", "parameterdescription1")));
         assertEquals(internalSubcommand.getParameters().size(), 1);
         assertTrue(internalSubcommand.getParameters()
                 .contains(new IntegerParameter("parametername", "parameterdescription1")));
@@ -32,8 +32,21 @@ public class InternalSubcommandTest {
     @Test
     public void testAdd1() {
         InternalSubcommand internalSubcommand = new InternalSubcommand("subcommandname", "subcommanddescription");
-        internalSubcommand.add(new IntegerParameter("parametername", "parameterdescription1"));
-        internalSubcommand.add(new BooleanParameter("parametername", "parameterdescription2"));
+        assertTrue(internalSubcommand.add(new IntegerParameter("parametername", "parameterdescription1")));
+        assertFalse(internalSubcommand.add(new BooleanParameter("parametername", "parameterdescription2")));
+        assertEquals(internalSubcommand.getParameters().size(), 1);
+        assertEquals(internalSubcommand.getParameters().stream().findFirst().get().getDescription(),
+                "parameterdescription1");
+        assertNotNull(internalSubcommand.getIntegerParameter("parametername"));
+        assertNull(internalSubcommand.getBooleanParameter("parametername"));
+        assertNull(internalSubcommand.getStringParameter("parametername"));
+    }
+
+    @Test
+    public void testAdd2() {
+        InternalSubcommand internalSubcommand = new InternalSubcommand("subcommandname", "subcommanddescription");
+        assertTrue(internalSubcommand.add(new BooleanParameter("parametername", "parameterdescription2")));
+        assertFalse(internalSubcommand.add(new StringParameter("parametername", "parameterdescription1")));
         assertEquals(internalSubcommand.getParameters().size(), 1);
         assertEquals(internalSubcommand.getParameters().stream().findFirst().get().getDescription(),
                 "parameterdescription2");
@@ -43,10 +56,10 @@ public class InternalSubcommandTest {
     }
 
     @Test
-    public void testAdd2() {
+    public void testAdd3() {
         InternalSubcommand internalSubcommand = new InternalSubcommand("subcommandname", "subcommanddescription");
-        internalSubcommand.add(new BooleanParameter("parametername", "parameterdescription2"));
-        internalSubcommand.add(new StringParameter("parametername", "parameterdescription1"));
+        assertTrue(internalSubcommand.add(new StringParameter("parametername", "parameterdescription1")));
+        assertFalse(internalSubcommand.add(new IntegerParameter("parametername", "parameterdescription2")));
         assertEquals(internalSubcommand.getParameters().size(), 1);
         assertEquals(internalSubcommand.getParameters().stream().findFirst().get().getDescription(),
                 "parameterdescription1");
@@ -56,28 +69,15 @@ public class InternalSubcommandTest {
     }
 
     @Test
-    public void testAdd3() {
-        InternalSubcommand internalSubcommand = new InternalSubcommand("subcommandname", "subcommanddescription");
-        internalSubcommand.add(new StringParameter("parametername", "parameterdescription1"));
-        internalSubcommand.add(new IntegerParameter("parametername", "parameterdescription2"));
-        assertEquals(internalSubcommand.getParameters().size(), 1);
-        assertEquals(internalSubcommand.getParameters().stream().findFirst().get().getDescription(),
-                "parameterdescription2");
-        assertNotNull(internalSubcommand.getIntegerParameter("parametername"));
-        assertNull(internalSubcommand.getBooleanParameter("parametername"));
-        assertNull(internalSubcommand.getStringParameter("parametername"));
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void testAdd4() {
         InternalSubcommand internalSubcommand = new InternalSubcommand("subcommandname", "subcommanddescription");
-        internalSubcommand.add(new DummyParameter());
+        assertThrows(IllegalArgumentException.class, () -> internalSubcommand.add(new DummyParameter()));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test
     public void testAdd5() {
         InternalSubcommand internalSubcommand = new InternalSubcommand("subcommandname", "subcommanddescription");
-        internalSubcommand.add(null);
+        assertThrows(IllegalArgumentException.class, () -> internalSubcommand.add(null));
     }
 
     @Test
@@ -96,13 +96,13 @@ public class InternalSubcommandTest {
     public void testGetParameters1() {
         InternalSubcommand internalSubcommand = new InternalSubcommand("subcommandname", "subcommanddescription");
         Parameter<Boolean> parameter1 = new BooleanParameter("parametertestname1", "parameterdescription1");
-        internalSubcommand.add(parameter1);
+        assertTrue(internalSubcommand.add(parameter1));
         Parameter<Integer> parameter2 = new IntegerParameter("parametertestname2", "parameterdescription2");
-        internalSubcommand.add(parameter2);
+        assertTrue(internalSubcommand.add(parameter2));
         Parameter<String> parameter3 = new StringParameter("parametertestname3", "parameterdescription3");
-        internalSubcommand.add(parameter3);
+        assertTrue(internalSubcommand.add(parameter3));
         Parameter<String> parameter4 = new StringParameter("parametertestname4", "parameterdescription4");
-        internalSubcommand.add(parameter4);
+        assertTrue(internalSubcommand.add(parameter4));
 
         assertEquals(internalSubcommand.getParameters().size(), 4);
         assertTrue(internalSubcommand.getParameters().contains(parameter1));
@@ -120,7 +120,7 @@ public class InternalSubcommandTest {
     @Test
     public void testGetIntegerParameter1() {
         InternalSubcommand internalSubcommand = new InternalSubcommand("subcommandname", "subcommanddescription");
-        internalSubcommand.add(new IntegerParameter("parametername", "parameterdescription"));
+        assertTrue(internalSubcommand.add(new IntegerParameter("parametername", "parameterdescription")));
         assertNotNull(internalSubcommand.getIntegerParameter("parametername"));
     }
 
@@ -133,7 +133,7 @@ public class InternalSubcommandTest {
     @Test
     public void testGetBooleanParameter1() {
         InternalSubcommand internalSubcommand = new InternalSubcommand("subcommandname", "subcommanddescription");
-        internalSubcommand.add(new BooleanParameter("parametername", "parameterdescription"));
+        assertTrue(internalSubcommand.add(new BooleanParameter("parametername", "parameterdescription")));
         assertNotNull(internalSubcommand.getBooleanParameter("parametername"));
     }
 
@@ -146,7 +146,7 @@ public class InternalSubcommandTest {
     @Test
     public void testGetStringParameter1() {
         InternalSubcommand internalSubcommand = new InternalSubcommand("subcommandname", "subcommanddescription");
-        internalSubcommand.add(new StringParameter("parametername", "parameterdescription"));
+        assertTrue(internalSubcommand.add(new StringParameter("parametername", "parameterdescription")));
         assertNotNull(internalSubcommand.getStringParameter("parametername"));
     }
 
@@ -159,8 +159,9 @@ public class InternalSubcommandTest {
     @Test
     public void testCopy() {
         InternalSubcommand internalSubcommand = new InternalSubcommand("subcommandname", "subcommanddescription");
-        internalSubcommand.add(new StringParameter("parametername1", "parameterdescription1"));
-        internalSubcommand.add(new IntegerParameter("parametername2", "parameterdescription2").makeOptional(4));
+        assertTrue(internalSubcommand.add(new StringParameter("parametername1", "parameterdescription1")));
+        assertTrue(internalSubcommand
+                .add(new IntegerParameter("parametername2", "parameterdescription2").makeOptional(4)));
         InternalSubcommand copy = internalSubcommand.copy();
         assertEquals(copy.getName(), "subcommandname");
         assertEquals(copy.getDescription(), "subcommanddescription");
