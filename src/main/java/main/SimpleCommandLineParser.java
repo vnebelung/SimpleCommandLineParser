@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 04.04.20, 23:25.
- * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 23.01.21, 20:39.
+ * Copyright (c) 2013-2021 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -25,7 +25,7 @@ public class SimpleCommandLineParser {
 
     private final static Pattern PARAMETER_FORMAT = Pattern.compile("--.+");
     private InternalCommand command;
-    private Menu helpMenu;
+    private final Menu helpMenu;
 
     /**
      * Creates a command line parser.
@@ -96,7 +96,8 @@ public class SimpleCommandLineParser {
                 // Parse all parameters of the subcommand
                 parseParameters(arguments, subcommand.getParameters());
             } catch (ParameterException e) {
-                throw new ParameterException(helpMenu.printUsage(command, subcommand, e.getMessage()));
+                throw new ParameterException(
+                        helpMenu.printUsage(command, command.getSubcommand(subcommand.getName()), e.getMessage()));
             }
 
             // Check if all parameters have values not null. A null value means that a mandatory parameter was not
@@ -104,7 +105,8 @@ public class SimpleCommandLineParser {
             for (Parameter<?> parameter : subcommand.getParameters()) {
                 if (parameter.getValue() == null) {
                     String error = "Parameter '" + parameter.getName() + "' is missing";
-                    throw new ParameterException(helpMenu.printUsage(command, subcommand, error));
+                    throw new ParameterException(
+                            helpMenu.printUsage(command, command.getSubcommand(subcommand.getName()), error));
                 }
             }
 
@@ -132,7 +134,7 @@ public class SimpleCommandLineParser {
     }
 
     /**
-     * Parses the parameters of the command line arguments. A parameter must have the structure "--key=value". If either
+     * Parses the parameters of the command line arguments. A parameter must have the structure "--key value". If either
      * the argument format is invalid, an argument contains a parameter name that is not in the given allowed parameter
      * names, or an argument's value cannot be parsed to the predefined parameter type, a parameter exception is
      * thrown.

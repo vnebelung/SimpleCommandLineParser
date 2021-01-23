@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 04.04.20, 11:17.
- * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 23.01.21, 20:39.
+ * Copyright (c) 2013-2021 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -8,6 +8,7 @@
 
 package main;
 
+import internal.parameters.AbstractParameter;
 import org.testng.annotations.Test;
 
 import java.util.LinkedList;
@@ -237,6 +238,47 @@ public class SimpleCommandLineParserTest {
         commandLine.setCommand(command);
 
         assertThrows(ParameterException.class, commandLine::parse);
+    }
+
+    @Test
+    public void testParse12() {
+        SimpleCommandLineParser commandLine = new SimpleCommandLineParser();
+        Command command = CommandFactory.createCommand("commandname", "commanddescription");
+        Subcommand subcommand = CommandFactory.createSubcommand("subcommandname", "subcommanddescription");
+        Parameter<String> parameter1 =
+                ParameterFactory.createStringParameter("parametername1", "parameterdescription1");
+        subcommand.add(parameter1);
+        AbstractParameter<String> parameter2 =
+                ParameterFactory.createStringParameter("parametername2", "parameterdescription2")
+                        .makeOptional("default1");
+        subcommand.add(parameter2);
+        Parameter<String> parameter3 =
+                ParameterFactory.createStringParameter("parametername3", "parameterdescription3");
+        subcommand.add(parameter3);
+        command.add(subcommand);
+        commandLine.setCommand(command);
+
+        List<String> reference = new LinkedList<>();
+        reference.add("Error: Parameter 'wrong' has no valid format");
+        reference.add("");
+        reference.add("Usage: commandname subcommandname --parametername1 <value>");
+        reference.add("          --parametername3 <value> [--parametername2 <value>]");
+        reference.add("");
+        reference.add("subcommanddescription");
+        reference.add("");
+        reference.add("Options:");
+        reference.add("  --parametername1  parameterdescription1");
+        reference.add("  --parametername2  (Optional) parameterdescription2 The default value is");
+        reference.add("                    'default1'.");
+        reference.add("  --parametername3  parameterdescription3");
+
+        try {
+            commandLine.parse("subcommandname", "--parametername1", "parametervalue1", "wrong", "--parametername2",
+                    "parametervalue2", "--parametername3", "parametervalue3");
+            fail();
+        } catch (ParameterException e) {
+            assertEquals(e.getMessage().lines().collect(Collectors.toList()), reference);
+        }
     }
 
     @Test

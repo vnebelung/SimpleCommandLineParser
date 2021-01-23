@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 04.04.20, 22:47.
- * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 23.01.21, 20:39.
+ * Copyright (c) 2013-2021 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -93,14 +93,7 @@ public class MenuTest {
 
     @Test
     public void testPrintUsage1() {
-        InternalCommand internalCommand = new InternalCommand("commandname",
-                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
-                        "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
-                        " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
-                        "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
-                        "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
-                        "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.");
+        InternalCommand internalCommand = new InternalCommand("commandname", "dummy");
         InternalSubcommand internalSubcommand1 = new InternalSubcommand("subcommand1",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
@@ -108,7 +101,7 @@ public class MenuTest {
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.");
+                        "sanctus est Lorem ipsum dolor sit amet.1");
         internalSubcommand1.add(new StringParameter("parameter3",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
@@ -116,7 +109,7 @@ public class MenuTest {
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.").makeOptional("text"));
+                        "sanctus est Lorem ipsum dolor sit amet.3").makeOptional("text"));
         internalSubcommand1.add(new BooleanParameter("param4",
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
                         "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
@@ -124,32 +117,11 @@ public class MenuTest {
                         "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
                         "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet."));
+                        "sanctus est Lorem ipsum dolor sit amet.2"));
         internalCommand.add(internalSubcommand1);
-        InternalSubcommand internalSubcommand2 = new InternalSubcommand("subcommand2",
-                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
-                        "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
-                        " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
-                        "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
-                        "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
-                        "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.");
-        internalSubcommand2.add(new IntegerParameter("parameter5",
-                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
-                        "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
-                        " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
-                        "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
-                        "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
-                        "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet.").makeOptional(5));
-        internalSubcommand2.add(new StringParameter("param6",
-                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut " +
-                        "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo" +
-                        " dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum " +
-                        "dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy " +
-                        "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero " +
-                        "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
-                        "sanctus est Lorem ipsum dolor sit amet."));
+        InternalSubcommand internalSubcommand2 = new InternalSubcommand("subcommand2", "dummy");
+        internalSubcommand2.add(new IntegerParameter("parameter5", "dummy").makeOptional(5));
+        internalSubcommand2.add(new StringParameter("param6", "dummy"));
         internalCommand.add(internalSubcommand2);
         Menu helpMenu = new Menu();
 
@@ -165,7 +137,7 @@ public class MenuTest {
         reference.add("amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut");
         reference.add("labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam");
         reference.add("et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata");
-        reference.add("sanctus est Lorem ipsum dolor sit amet.");
+        reference.add("sanctus est Lorem ipsum dolor sit amet.1");
         reference.add("");
         reference.add("Options:");
         reference.add("  --param4      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed");
@@ -177,7 +149,7 @@ public class MenuTest {
         reference.add("                eirmod tempor invidunt ut labore et dolore magna aliquyam erat,");
         reference.add("                sed diam voluptua. At vero eos et accusam et justo duo dolores");
         reference.add("                et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus");
-        reference.add("                est Lorem ipsum dolor sit amet.");
+        reference.add("                est Lorem ipsum dolor sit amet.2");
         reference.add("  --parameter3  (Optional) Lorem ipsum dolor sit amet, consetetur sadipscing");
         reference.add("                elitr, sed diam nonumy eirmod tempor invidunt ut labore et");
         reference.add("                dolore magna aliquyam erat, sed diam voluptua. At vero eos et");
@@ -187,7 +159,7 @@ public class MenuTest {
         reference.add("                sed diam nonumy eirmod tempor invidunt ut labore et dolore magna");
         reference.add("                aliquyam erat, sed diam voluptua. At vero eos et accusam et");
         reference.add("                justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea");
-        reference.add("                takimata sanctus est Lorem ipsum dolor sit amet. The default");
+        reference.add("                takimata sanctus est Lorem ipsum dolor sit amet.3 The default");
         reference.add("                value is 'text'.");
 
         assertEquals(helpMenu.printUsage(internalCommand, internalSubcommand1, "texterror").lines()
