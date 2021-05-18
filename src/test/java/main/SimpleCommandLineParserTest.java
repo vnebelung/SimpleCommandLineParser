@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 23.01.21, 20:39.
+ * This file is part of ProDisFuzz, modified on 17.05.21, 23:47.
  * Copyright (c) 2013-2021 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -279,6 +279,17 @@ public class SimpleCommandLineParserTest {
         } catch (ParameterException e) {
             assertEquals(e.getMessage().lines().collect(Collectors.toList()), reference);
         }
+    }
+
+    @Test
+    public void testParse13() {
+        SimpleCommandLineParser commandLine = new SimpleCommandLineParser();
+        Command command = CommandFactory.createCommand("commandname", "commanddescription");
+        Subcommand subcommand = CommandFactory.createSubcommand("subcommandname", "subcommanddescription");
+        command.add(subcommand);
+        commandLine.setCommand(command);
+
+        assertThrows(ParameterException.class, commandLine::parse);
     }
 
     @Test
