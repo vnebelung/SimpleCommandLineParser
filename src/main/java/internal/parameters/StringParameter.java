@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 04.04.20, 13:34.
- * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 13.10.24, 07:01.
+ * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -16,7 +16,7 @@ import main.ParameterException;
 public class StringParameter extends AbstractParameter<String> {
 
     /**
-     * Instantiates a new integer parameter.
+     * Instantiates a new string parameter.
      *
      * @param name        the parameter's name
      * @param description the parameter's description for the help menu

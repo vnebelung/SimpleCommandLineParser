@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 04.04.20, 22:47.
- * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 12.10.24, 23:00.
+ * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -24,8 +24,8 @@ import java.util.Objects;
 public abstract class AbstractParameter<V> implements Parameter<V>, ParsedParameter<V> {
 
     private V value;
-    private String description;
-    private String name;
+    private final String description;
+    private final String name;
 
     /**
      * Instantiates a new mandatory parameter with a given description.
@@ -114,10 +114,9 @@ public abstract class AbstractParameter<V> implements Parameter<V>, ParsedParame
         if (this == o) {
             return true;
         }
-        if (!(o instanceof AbstractParameter)) {
+        if (!(o instanceof AbstractParameter<?> that)) {
             return false;
         }
-        AbstractParameter<?> that = (AbstractParameter<?>) o;
         return Objects.equals(name, that.name);
     }
 

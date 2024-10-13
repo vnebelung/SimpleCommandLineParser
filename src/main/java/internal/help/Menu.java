@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 28.03.20, 21:55.
- * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 12.10.24, 23:00.
+ * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -21,7 +21,7 @@ import java.util.*;
 public class Menu {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private static int TERMINAL_WIDTH = 80;
+    private static final int TERMINAL_WIDTH = 80;
 
     /**
      * Instantiates a new help menu that prints out usage help menus.
@@ -163,7 +163,7 @@ public class Menu {
                 line.setLength(0);
                 line.append(spaces);
             }
-            if (line.length() > 0 && line.charAt(line.length() - 1) != ' ') {
+            if (!line.isEmpty() && line.charAt(line.length() - 1) != ' ') {
                 line.append(" ");
             }
             line.append(part);

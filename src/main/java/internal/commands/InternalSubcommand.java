@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 05.04.20, 00:11.
- * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 12.10.24, 23:00.
+ * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -25,11 +25,11 @@ import java.util.*;
  */
 public class InternalSubcommand implements Subcommand, ParsedSubcommand {
 
-    private Set<AbstractParameter<Integer>> integerParameters = new HashSet<>();
-    private Set<AbstractParameter<String>> stringParameters = new HashSet<>();
-    private Set<AbstractParameter<Boolean>> booleanParameters = new HashSet<>();
-    private String description;
-    private String name;
+    private final Set<AbstractParameter<Integer>> integerParameters = new HashSet<>();
+    private final Set<AbstractParameter<String>> stringParameters = new HashSet<>();
+    private final Set<AbstractParameter<Boolean>> booleanParameters = new HashSet<>();
+    private final String description;
+    private final String name;
 
     /**
      * Instantiates a new subcommand.
@@ -131,10 +131,9 @@ public class InternalSubcommand implements Subcommand, ParsedSubcommand {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof InternalSubcommand)) {
+        if (!(o instanceof InternalSubcommand that)) {
             return false;
         }
-        InternalSubcommand that = (InternalSubcommand) o;
         return Objects.equals(name, that.name);
     }
 
