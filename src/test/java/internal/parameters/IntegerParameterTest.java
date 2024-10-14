@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 04.04.20, 22:50.
- * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 14.10.24, 20:16.
+ * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -71,6 +71,32 @@ public class IntegerParameterTest {
     public void testSetValue8() {
         AbstractParameter<Integer> parameter = new IntegerParameter("parametername", "parameterdescription");
         assertThrows(ParameterException.class, () -> parameter.setValue(null));
+    }
+
+    @Test
+    public void testSetValue9() {
+        AbstractParameter<Integer> parameter = new IntegerParameter("parametername", "parameterdescription", -1, 1);
+        assertThrows(ParameterException.class, () -> parameter.setValue("-2"));
+    }
+
+    @Test
+    public void testSetValue10() throws ParameterException {
+        AbstractParameter<Integer> parameter = new IntegerParameter("parametername", "parameterdescription", -1, 1);
+        parameter.setValue("-1");
+        assertEquals(parameter.getValue().intValue(), -1);
+    }
+
+    @Test
+    public void testSetValue11() throws ParameterException {
+        AbstractParameter<Integer> parameter = new IntegerParameter("parametername", "parameterdescription", -1, 1);
+        parameter.setValue("1");
+        assertEquals(parameter.getValue().intValue(), 1);
+    }
+
+    @Test
+    public void testSetValue12() {
+        AbstractParameter<Integer> parameter = new IntegerParameter("parametername", "parameterdescription", -1, 1);
+        assertThrows(ParameterException.class, () -> parameter.setValue("2"));
     }
 
     @Test

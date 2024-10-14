@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 02.04.20, 21:24.
- * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 14.10.24, 20:17.
+ * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -15,6 +15,9 @@ import main.ParameterException;
  */
 public class IntegerParameter extends AbstractParameter<Integer> {
 
+    private final int minInclusive;
+    private final int maxInclusive;
+
     /**
      * Instantiates a new integer parameter.
      *
@@ -22,7 +25,25 @@ public class IntegerParameter extends AbstractParameter<Integer> {
      * @param description the parameter's description for the help menu
      */
     public IntegerParameter(String name, String description) {
+        this(name, description, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    /**
+     * Instantiates a new integer parameter. The parameter's values are only allowed in the given range of minimum
+     * and maximum values.
+     *
+     * @param name         the parameter's name
+     * @param description  the parameter's description for the help menu
+     * @param minInclusive the parameter's allowed minimum value (inclusive)
+     * @param maxInclusive the parameter's allowed maximum value (inclusive)
+     */
+    public IntegerParameter(String name, String description, int minInclusive, int maxInclusive) {
         super(name, description);
+        this.minInclusive = minInclusive;
+        this.maxInclusive = maxInclusive;
+        if (this.minInclusive > maxInclusive) {
+            throw new IllegalArgumentException("minInclusive must not be greater than maxInclusive");
+        }
     }
 
     @Override
@@ -37,6 +58,12 @@ public class IntegerParameter extends AbstractParameter<Integer> {
             setCastedValue(Integer.valueOf(value));
         } catch (NumberFormatException ignored) {
             throw new ParameterException("The parameter's value is not a valid integer");
+        }
+        if (getValue() < minInclusive) {
+            throw new ParameterException("The parameter's value must not be lower than " + minInclusive);
+        }
+        if (getValue() > maxInclusive) {
+            throw new ParameterException("The parameter's value must not be greater than " + maxInclusive);
         }
     }
 

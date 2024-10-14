@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 04.04.20, 23:25.
- * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 13.10.24, 07:18.
+ * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -47,6 +47,23 @@ public class ParameterFactory {
      */
     public static Parameter<Integer> createIntegerParameter(String name, String description) {
         return new IntegerParameter(name, description);
+    }
+
+    /**
+     * Creates a new integer parameter with a given name, description, and minimum and maximum boundaries. The
+     * parameter must be attached to a command or a subcommand and is used to define a key value pair that a user can
+     * use to submit an integer input. The key is defined by the given name. The parameter is by default mandatory.
+     * If the parameter shall be optional, you must set its default value.
+     *
+     * @param name         the parameter's name
+     * @param description  the parameter's description for the help menu
+     * @param minInclusive the parameter's allowed minimum value (inclusive)
+     * @param maxInclusive the parameter's allowed maximum value (inclusive)
+     * @return the created integer parameter
+     */
+    public static Parameter<Integer> createIntegerParameter(String name, String description, int minInclusive,
+                                                            int maxInclusive) {
+        return new IntegerParameter(name, description, minInclusive, maxInclusive);
     }
 
     /**
