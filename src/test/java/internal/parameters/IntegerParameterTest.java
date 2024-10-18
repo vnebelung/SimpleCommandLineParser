@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 14.10.24, 20:16.
+ * This file is part of ProDisFuzz, modified on 19.10.24, 00:55.
  * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -111,13 +111,18 @@ public class IntegerParameterTest {
     }
 
     @Test
-    public void testCopy1() {
-        AbstractParameter<Integer> parameter = new IntegerParameter("parametername", "parameterdescription");
+    public void testCopy1() throws ParameterException {
+        AbstractParameter<Integer> parameter = new IntegerParameter("parametername", "parameterdescription", -1, 1);
         AbstractParameter<Integer> copy = parameter.copy();
         assertEquals(copy.getClass(), IntegerParameter.class);
         assertEquals(parameter.getName(), copy.getName());
         assertEquals(copy.getDescription(), parameter.getDescription());
         assertEquals(copy.getValue(), parameter.getValue());
+        assertThrows(ParameterException.class, () -> copy.setValue("-2"));
+        copy.setValue("-1");
+        copy.setValue("0");
+        copy.setValue("1");
+        assertThrows(ParameterException.class, () -> copy.setValue("2"));
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 14.10.24, 20:17.
+ * This file is part of ProDisFuzz, modified on 18.10.24, 07:43.
  * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -69,7 +69,7 @@ public class IntegerParameter extends AbstractParameter<Integer> {
 
     @Override
     public AbstractParameter<Integer> copy() {
-        IntegerParameter result = new IntegerParameter(getName(), getDescription());
+        IntegerParameter result = new IntegerParameter(getName(), getDescription(), minInclusive, maxInclusive);
         result.setCastedValue(getValue());
         return result;
     }
