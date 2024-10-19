@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!--
-  ~ This file is part of ProDisFuzz, modified on 19.10.24, 01:22.
+  ~ This file is part of ProDisFuzz, modified on 19.10.24, 17:07.
   ~ Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
   ~ This work is free. You can redistribute it and/or modify it under the
   ~ terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -60,7 +60,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>4.0.0-beta-1</version>
+                <version>3.13.0</version>
             </plugin>
         </plugins>
     </build>
