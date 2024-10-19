@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 13.10.24, 07:18.
+ * This file is part of ProDisFuzz, modified on 19.10.24, 01:50.
  * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -67,16 +67,17 @@ public class ParameterFactory {
     }
 
     /**
-     * Creates a new string parameter with a given name and description. The parameter must be attached to a
-     * command or a subcommand and is used to define a key value pair that a user can use to submit a string input. The
-     * key is defined by the given name. The parameter is by default mandatory. If the parameter shall be optional,
-     * you must set its default value.
+     * Creates a new string parameter with a given name, description and (optional) allowed values. The parameter must
+     * be attached to a command or a subcommand and is used to define a key value pair that a user can use to submit
+     * a string input. The key is defined by the given name. The parameter is by default mandatory. If the parameter
+     * shall be optional, you must set its default value.
      *
      * @param name        the parameter's name
      * @param description the parameter's description for the help menu
+     * @param values the parameter's allowed values
      * @return the created string parameter
      */
-    public static Parameter<String> createStringParameter(String name, String description) {
-        return new StringParameter(name, description);
+    public static Parameter<String> createStringParameter(String name, String description, String... values) {
+        return new StringParameter(name, description, values);
     }
 }

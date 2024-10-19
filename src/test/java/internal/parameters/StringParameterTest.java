@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 04.04.20, 22:47.
- * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 19.10.24, 17:03.
+ * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -58,22 +58,36 @@ public class StringParameterTest {
         assertEquals(parameter.getValue(), "a");
     }
 
-    @Test(expectedExceptions = ParameterException.class)
-    public void testSetValue6() throws ParameterException {
+    @Test
+    public void testSetValue6() {
         AbstractParameter<String> parameter = new StringParameter("parametername", "parameterdescription");
-        parameter.setValue("");
+        assertThrows(ParameterException.class, () -> parameter.setValue(""));
     }
 
     @Test
-    public void testSetValue7() {
+    public void testSetValue7() throws ParameterException {
         AbstractParameter<String> parameter = new StringParameter("parametername", "parameterdescription");
-        assertThrows(ParameterException.class, () -> parameter.setValue("    "));
+        parameter.setValue("    ");
     }
 
     @Test
     public void testSetValue8() {
         AbstractParameter<String> parameter = new StringParameter("parametername", "parameterdescription");
         assertThrows(ParameterException.class, () -> parameter.setValue(null));
+    }
+
+    @Test
+    public void testSetValue9() throws ParameterException {
+        AbstractParameter<String> parameter =
+                new StringParameter("parametername", "parameterdescription", "test1", "test2");
+        parameter.setValue("test1");
+    }
+
+    @Test
+    public void testSetValue10() {
+        AbstractParameter<String> parameter =
+                new StringParameter("parametername", "parameterdescription", "test1", "test2");
+        assertThrows(ParameterException.class, () -> parameter.setValue("test3"));
     }
 
     @Test
@@ -88,13 +102,17 @@ public class StringParameterTest {
     }
 
     @Test
-    public void testCopy1() {
-        AbstractParameter<String> parameter = new StringParameter("parametername", "parameterdescription");
+    public void testCopy1() throws ParameterException {
+        AbstractParameter<String> parameter =
+                new StringParameter("parametername", "parameterdescription", "test1", "test2");
         AbstractParameter<String> copy = parameter.copy();
         assertEquals(copy.getClass(), StringParameter.class);
         assertEquals(parameter.getName(), copy.getName());
         assertEquals(copy.getDescription(), parameter.getDescription());
         assertEquals(copy.getValue(), parameter.getValue());
+        copy.setValue("test1");
+        copy.setValue("test2");
+        assertThrows(ParameterException.class, () -> copy.setValue("test3"));
     }
 
 }
