@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 19.10.24, 17:03.
+ * This file is part of ProDisFuzz, modified on 21.10.24, 08:43.
  * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -115,4 +115,16 @@ public class StringParameterTest {
         assertThrows(ParameterException.class, () -> copy.setValue("test3"));
     }
 
+    @Test
+    public void testGetAllowedValues() {
+        AbstractParameter<String> parameter = new StringParameter("parametername", "parameterdescription");
+        assertEquals(parameter.getAllowedValues(), "");
+    }
+
+    @Test
+    public void testGetAllowedValues1() {
+        AbstractParameter<String> parameter =
+                new StringParameter("parametername", "parameterdescription", "test3", "  ", "test1");
+        assertEquals(parameter.getAllowedValues(), "  |test1|test3");
+    }
 }

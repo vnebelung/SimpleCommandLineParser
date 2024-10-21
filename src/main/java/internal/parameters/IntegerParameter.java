@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 18.10.24, 07:43.
+ * This file is part of ProDisFuzz, modified on 20.10.24, 15:58.
  * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -74,4 +74,11 @@ public class IntegerParameter extends AbstractParameter<Integer> {
         return result;
     }
 
+    @Override
+    public String getAllowedValues() {
+        if (minInclusive == Integer.MIN_VALUE && maxInclusive == Integer.MAX_VALUE) {
+            return "";
+        }
+        return minInclusive + " to " + maxInclusive;
+    }
 }

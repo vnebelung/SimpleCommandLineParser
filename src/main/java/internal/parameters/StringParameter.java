@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 19.10.24, 01:50.
+ * This file is part of ProDisFuzz, modified on 21.10.24, 08:37.
  * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -10,32 +10,35 @@ package internal.parameters;
 
 import main.ParameterException;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * This class is a string parameter of the command line.
  */
 public class StringParameter extends AbstractParameter<String> {
 
-    private final Set<String> values = new HashSet<>();
+    private final SortedSet<String> allowedValues = new TreeSet<>();
 
     /**
      * Instantiates a string integer parameter. If there are no given values, the parameter will consider all
      * strings as valid. If the given values contain one or more strings, the parameter will consider only the given
      * strings as valid.
      *
-     * @param name        the parameter's name
-     * @param description the parameter's description for the help menu
-     * @param values      the parameter's allowed string values
+     * @param name          the parameter's name
+     * @param description   the parameter's description for the help menu
+     * @param allowedValues the parameter's allowed string values
      */
-    public StringParameter(String name, String description, String... values) {
+    public StringParameter(String name, String description, String... allowedValues) {
         super(name, description);
-        for (String value : values) {
-            if (value.isEmpty()) {
-                throw new IllegalArgumentException("Only non-empty values are allowed");
+        for (String allowedValue : allowedValues) {
+            if (allowedValue == null) {
+                throw new IllegalArgumentException("Allowed values must not be null");
             }
-            this.values.add(value);
+            if (allowedValue.isEmpty()) {
+                throw new IllegalArgumentException("Allowed values must not be empty");
+            }
+            this.allowedValues.add(allowedValue);
         }
     }
 
@@ -47,8 +50,8 @@ public class StringParameter extends AbstractParameter<String> {
         if (value.isEmpty()) {
             throw new ParameterException("The parameter's value must not be empty");
         }
-        if (!values.isEmpty() && !values.contains(value)) {
-            String allowed = "{" + String.join(",", values) + "}";
+        if (!allowedValues.isEmpty() && !allowedValues.contains(value)) {
+            String allowed = "{" + String.join(",", allowedValues) + "}";
             throw new ParameterException("The parameter's value is not one of the allowed values " + allowed);
         }
         setCastedValue(value);
@@ -56,9 +59,13 @@ public class StringParameter extends AbstractParameter<String> {
 
     @Override
     public AbstractParameter<String> copy() {
-        StringParameter result = new StringParameter(getName(), getDescription(), values.toArray(new String[0]));
+        StringParameter result = new StringParameter(getName(), getDescription(), allowedValues.toArray(new String[0]));
         result.setCastedValue(getValue());
         return result;
     }
 
+    @Override
+    public String getAllowedValues() {
+        return String.join("|", allowedValues);
+    }
 }

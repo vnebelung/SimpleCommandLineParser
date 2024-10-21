@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 19.10.24, 00:55.
+ * This file is part of ProDisFuzz, modified on 20.10.24, 15:58.
  * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -125,4 +125,15 @@ public class IntegerParameterTest {
         assertThrows(ParameterException.class, () -> copy.setValue("2"));
     }
 
+    @Test
+    public void testGetAllowedValues() {
+        AbstractParameter<Integer> parameter = new IntegerParameter("parametername", "parameterdescription");
+        assertEquals(parameter.getAllowedValues(), "");
+    }
+
+    @Test
+    public void testGetAllowedValues1() {
+        AbstractParameter<Integer> parameter = new IntegerParameter("parametername", "parameterdescription", -1, 1);
+        assertEquals(parameter.getAllowedValues(), "-1 to 1");
+    }
 }

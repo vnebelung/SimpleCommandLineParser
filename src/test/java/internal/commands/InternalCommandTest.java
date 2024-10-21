@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 05.04.20, 00:13.
- * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 20.10.24, 17:01.
+ * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -198,6 +198,11 @@ public class InternalCommandTest {
 
         @Override
         public AbstractParameter<Boolean> makeOptional(Boolean value) {
+            return null;
+        }
+
+        @Override
+        public String getAllowedValues() {
             return null;
         }
     }

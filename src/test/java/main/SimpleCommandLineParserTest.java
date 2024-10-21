@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 17.05.21, 23:47.
- * Copyright (c) 2013-2021 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 19.10.24, 23:58.
+ * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -8,7 +8,6 @@
 
 package main;
 
-import internal.parameters.AbstractParameter;
 import org.testng.annotations.Test;
 
 import java.util.LinkedList;
@@ -248,7 +247,7 @@ public class SimpleCommandLineParserTest {
         Parameter<String> parameter1 =
                 ParameterFactory.createStringParameter("parametername1", "parameterdescription1");
         subcommand.add(parameter1);
-        AbstractParameter<String> parameter2 =
+        Parameter<String> parameter2 =
                 ParameterFactory.createStringParameter("parametername2", "parameterdescription2")
                         .makeOptional("default1");
         subcommand.add(parameter2);

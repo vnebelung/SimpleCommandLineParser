@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 04.04.20, 23:34.
- * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 19.10.24, 23:58.
+ * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -44,6 +44,5 @@ public interface Command extends Subcommand {
      * @return the command's subcommands
      */
     Set<Subcommand> getSubcommands();
-
 
 }

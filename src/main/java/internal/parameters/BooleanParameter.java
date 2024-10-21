@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 12.10.24, 22:18.
+ * This file is part of ProDisFuzz, modified on 20.10.24, 17:01.
  * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -46,4 +46,8 @@ public class BooleanParameter extends AbstractParameter<Boolean> {
         return result;
     }
 
+    @Override
+    public String getAllowedValues() {
+        return "false|true";
+    }
 }

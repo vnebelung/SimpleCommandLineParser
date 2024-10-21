@@ -1,14 +1,12 @@
 /*
- * This file is part of ProDisFuzz, modified on 26.03.20, 22:09.
- * Copyright (c) 2013-2020 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 20.10.24, 15:04.
+ * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
  */
 
 package main;
-
-import internal.parameters.AbstractParameter;
 
 /**
  * This interface represents a parameter of the command line string used in the command line call. The type parameter
@@ -54,6 +52,14 @@ public interface Parameter<V> {
      * @param value the default value
      * @return the parameter with the default value
      */
-    AbstractParameter<V> makeOptional(V value);
+    Parameter<V> makeOptional(V value);
+
+    /**
+     * Returns a string representation of the allowed values of this parameter. These values are the only values the
+     * parameter can hold. If the parameter is not restricted to any values, an empty string will be returned.
+     *
+     * @return the parameter's restricted values or an empty string if there are no restrictions
+     */
+    String getAllowedValues();
 
 }

@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 12.10.24, 23:00.
+ * This file is part of ProDisFuzz, modified on 20.10.24, 17:49.
  * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -68,9 +68,11 @@ public class Menu {
         strings.add(command.getName());
         strings.add(subcommand.getName());
         subcommand.getParameters().stream().filter(parameter -> !parameter.isOptional())
-                .map(p -> "--" + p.getName() + " <value>").forEach(strings::add);
-        subcommand.getParameters().stream().filter(Parameter::isOptional).map(p -> "[--" + p.getName() + " <value>]")
-                .forEach(strings::add);
+                .map(p -> String.format("--%s " + "<%s>", p.getName(),
+                        p.getAllowedValues().isEmpty() ? "value" : p.getAllowedValues())).forEach(strings::add);
+        subcommand.getParameters().stream().filter(Parameter::isOptional)
+                .map(p -> String.format("[--%s <%s>]", p.getName(),
+                        p.getAllowedValues().isEmpty() ? "value" : p.getAllowedValues())).forEach(strings::add);
 
         result.append(System.lineSeparator());
         result.append(printUsage(strings));
@@ -101,9 +103,11 @@ public class Menu {
         List<String> strings = new LinkedList<>();
         strings.add(command.getName());
         command.getParameters().stream().filter(parameter -> !parameter.isOptional())
-                .map(p -> "--" + p.getName() + " <value>").forEach(strings::add);
-        command.getParameters().stream().filter(Parameter::isOptional).map(p -> "[--" + p.getName() + " <value>]")
-                .forEach(strings::add);
+                .map(p -> String.format("--%s " + "<%s>", p.getName(),
+                        p.getAllowedValues().isEmpty() ? "value" : p.getAllowedValues())).forEach(strings::add);
+        command.getParameters().stream().filter(Parameter::isOptional)
+                .map(p -> String.format("[--%s <%s>]", p.getName(),
+                        p.getAllowedValues().isEmpty() ? "value" : p.getAllowedValues())).forEach(strings::add);
         if (!command.getSubcommands().isEmpty()) {
             strings.add("<subcommand>");
             strings.add("[<args>]");
