@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 19.10.24, 01:50.
+ * This file is part of ProDisFuzz, modified on 23.10.24, 21:24.
  * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -10,7 +10,10 @@ package main;
 
 import internal.parameters.BooleanParameter;
 import internal.parameters.IntegerParameter;
+import internal.parameters.PathParameter;
 import internal.parameters.StringParameter;
+
+import java.nio.file.Path;
 
 /**
  * This class is the factory for generating parameters. Every parameter can have one of the following value types:
@@ -79,5 +82,21 @@ public class ParameterFactory {
      */
     public static Parameter<String> createStringParameter(String name, String description, String... values) {
         return new StringParameter(name, description, values);
+    }
+
+    /**
+     * Creates a new path parameter with a given name, description and a flag whether it shall point to an existing or
+     * non-existing file or directory. The parameter must be attached to a command or a subcommand and is used to
+     * define a key value pair that a user can use to submit a string input. The key is defined by the given name.
+     * The parameter is by default mandatory. If the parameter shall be optional, you must set its default value.
+     * This method does not check whether the targeted file or directory is readable or writable.
+     *
+     * @param name        the parameter's name
+     * @param description the parameter's description for the help menu
+     * @param existing    true if the path shall point to an existing file/directory, false otherwise
+     * @return the created path parameter
+     */
+    public static Parameter<Path> createPathParameter(String name, String description, boolean existing) {
+        return new PathParameter(name, description, existing);
     }
 }

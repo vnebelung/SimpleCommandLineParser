@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!--
-  ~ This file is part of ProDisFuzz, modified on 21.10.24, 01:30.
+  ~ This file is part of ProDisFuzz, modified on 21.10.24, 08:47.
   ~ Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
   ~ This work is free. You can redistribute it and/or modify it under the
   ~ terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -73,7 +73,7 @@
     </repositories>
     <distributionManagement>
         <repository>
-            <id>simple-command-line-parser</id>
+            <id>github</id>
             <name>vnebelung</name>
             <url>https://maven.pkg.github.com/vnebelung/SimpleCommandLineParser</url>
         </repository>

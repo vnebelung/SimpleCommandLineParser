@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 21.10.24, 08:40.
+ * This file is part of ProDisFuzz, modified on 23.10.24, 20:39.
  * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -9,6 +9,8 @@
 package main;
 
 import org.testng.annotations.Test;
+
+import java.nio.file.Path;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertThrows;
@@ -62,7 +64,6 @@ public class ParameterFactoryTest {
     public void testCreateStringParameter1() {
         assertThrows(IllegalArgumentException.class,
                 () -> ParameterFactory.createStringParameter("parametername", "parameterdescription", ""));
-
     }
 
     @Test
@@ -78,4 +79,12 @@ public class ParameterFactoryTest {
         assertThrows(IllegalArgumentException.class,
                 () -> ParameterFactory.createStringParameter("parametername", "parameterdescription", "test", null));
     }
+
+    @Test
+    public void testCreatePathParameter() {
+        Parameter<Path> parameter = ParameterFactory.createPathParameter("parametername", "parameterdescription", true);
+        assertEquals(parameter.getName(), "parametername");
+        assertEquals(parameter.getDescription(), "parameterdescription");
+    }
+
 }
