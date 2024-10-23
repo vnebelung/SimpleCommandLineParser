@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 21.10.24, 08:37.
+ * This file is part of ProDisFuzz, modified on 22.10.24, 20:15.
  * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -21,9 +21,9 @@ public class StringParameter extends AbstractParameter<String> {
     private final SortedSet<String> allowedValues = new TreeSet<>();
 
     /**
-     * Instantiates a string integer parameter. If there are no given values, the parameter will consider all
-     * strings as valid. If the given values contain one or more strings, the parameter will consider only the given
-     * strings as valid.
+     * Instantiates a new string parameter. If there are no given values, the parameter will consider all strings as
+     * valid. If the given values contain one or more strings, the parameter will consider only the given strings as
+     * valid.
      *
      * @param name          the parameter's name
      * @param description   the parameter's description for the help menu
