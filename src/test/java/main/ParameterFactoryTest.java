@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 23.10.24, 20:39.
+ * This file is part of ProDisFuzz, modified on 26.10.24, 23:48.
  * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -51,6 +51,35 @@ public class ParameterFactoryTest {
     public void testCreateIntegerParameter3() {
         assertThrows(IllegalArgumentException.class,
                 () -> ParameterFactory.createIntegerParameter("parametername", "parameterdescription", 1, 0));
+    }
+
+    @Test
+    public void testCreateDoubleParameter() {
+        Parameter<Double> parameter = ParameterFactory.createDoubleParameter("parametername", "parameterdescription");
+        assertEquals(parameter.getName(), "parametername");
+        assertEquals(parameter.getDescription(), "parameterdescription");
+    }
+
+    @Test
+    public void testCreateDoubleParameter1() {
+        Parameter<Double> parameter =
+                ParameterFactory.createDoubleParameter("parametername", "parameterdescription", 0.1, 1.9);
+        assertEquals(parameter.getName(), "parametername");
+        assertEquals(parameter.getDescription(), "parameterdescription");
+    }
+
+    @Test
+    public void testCreateDoubleParameter2() {
+        Parameter<Double> parameter =
+                ParameterFactory.createDoubleParameter("parametername", "parameterdescription", 0.1, 1.9);
+        assertEquals(parameter.getName(), "parametername");
+        assertEquals(parameter.getDescription(), "parameterdescription");
+    }
+
+    @Test
+    public void testCreateDoubleParameter3() {
+        assertThrows(IllegalArgumentException.class,
+                () -> ParameterFactory.createDoubleParameter("parametername", "parameterdescription", 1.1, 0.4));
     }
 
     @Test
