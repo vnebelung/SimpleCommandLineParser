@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 20.10.24, 17:01.
+ * This file is part of ProDisFuzz, modified on 30.10.24, 23:21.
  * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -103,8 +103,8 @@ public class InternalCommandTest {
     @Test
     public void testCopy() {
         InternalCommand internalCommand = new InternalCommand("commandname", "commanddescription");
-        assertTrue(internalCommand
-                .add(new StringParameter("parametername1", "parameterdescription1").makeOptional("parametervalue")));
+        assertTrue(internalCommand.add(
+                new StringParameter("parametername1", "parameterdescription1").makeOptional("parametervalue")));
         assertTrue(internalCommand.add(new BooleanParameter("parametername2", "parameterdescription2")));
         InternalCommand copy = internalCommand.copy();
         assertEquals(copy.getName(), "commandname");

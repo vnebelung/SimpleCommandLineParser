@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 20.10.24, 15:04.
+ * This file is part of ProDisFuzz, modified on 02.11.24, 10:26.
  * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -33,7 +33,7 @@ public interface Parameter<V> {
     /**
      * Returns the value of the parameter.
      *
-     * @return the parameter's value
+     * @return the parameter's value or null if the default value is not set
      */
     V getValue();
 

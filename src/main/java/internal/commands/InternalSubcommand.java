@@ -1,5 +1,5 @@
 /*
- * This file is part of ProDisFuzz, modified on 12.10.24, 23:00.
+ * This file is part of ProDisFuzz, modified on 31.10.24, 00:33.
  * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -8,15 +8,13 @@
 
 package internal.commands;
 
-import internal.parameters.AbstractParameter;
-import internal.parameters.BooleanParameter;
-import internal.parameters.IntegerParameter;
-import internal.parameters.StringParameter;
+import internal.parameters.*;
 import main.Parameter;
 import main.ParsedParameter;
 import main.ParsedSubcommand;
 import main.Subcommand;
 
+import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -25,11 +23,13 @@ import java.util.*;
  */
 public class InternalSubcommand implements Subcommand, ParsedSubcommand {
 
-    private final Set<AbstractParameter<Integer>> integerParameters = new HashSet<>();
-    private final Set<AbstractParameter<String>> stringParameters = new HashSet<>();
-    private final Set<AbstractParameter<Boolean>> booleanParameters = new HashSet<>();
-    private final String description;
-    private final String name;
+    private Set<AbstractParameter<Integer>> integerParameters = new HashSet<>();
+    private Set<AbstractParameter<String>> stringParameters = new HashSet<>();
+    private Set<AbstractParameter<Boolean>> booleanParameters = new HashSet<>();
+    private Set<AbstractParameter<Path>> pathParameters = new HashSet<>();
+    private Set<AbstractParameter<Double>> doubleParameters = new HashSet<>();
+    private String description;
+    private String name;
 
     /**
      * Instantiates a new subcommand.
@@ -60,6 +60,8 @@ public class InternalSubcommand implements Subcommand, ParsedSubcommand {
         results.addAll(integerParameters);
         results.addAll(stringParameters);
         results.addAll(booleanParameters);
+        results.addAll(pathParameters);
+        results.addAll(doubleParameters);
         return Collections.unmodifiableSet(results);
     }
 
@@ -71,18 +73,14 @@ public class InternalSubcommand implements Subcommand, ParsedSubcommand {
         if (getParameters().contains(parameter)) {
             return false;
         }
-        if (parameter.getClass() == IntegerParameter.class) {
-            IntegerParameter integerParameter = (IntegerParameter) parameter;
-            return integerParameters.add(integerParameter);
-        } else if (parameter.getClass() == BooleanParameter.class) {
-            BooleanParameter booleanParameter = (BooleanParameter) parameter;
-            return booleanParameters.add(booleanParameter);
-        } else if (parameter.getClass() == StringParameter.class) {
-            StringParameter stringParameter = (StringParameter) parameter;
-            return stringParameters.add(stringParameter);
-        } else {
-            throw new IllegalArgumentException("Parameter was not created by the command line parser");
-        }
+        return switch (parameter) {
+            case IntegerParameter integerParameter -> integerParameters.add(integerParameter);
+            case BooleanParameter booleanParameter -> booleanParameters.add(booleanParameter);
+            case StringParameter stringParameter -> stringParameters.add(stringParameter);
+            case PathParameter pathParameter -> pathParameters.add(pathParameter);
+            case DoubleParameter doubleParameter -> doubleParameters.add(doubleParameter);
+            default -> throw new IllegalArgumentException("Parameter was not created by the command line parser");
+        };
     }
 
     @Override
@@ -108,6 +106,16 @@ public class InternalSubcommand implements Subcommand, ParsedSubcommand {
     }
 
     @Override
+    public ParsedParameter<Path> getPathParameter(String name) {
+        return pathParameters.stream().filter(parameter -> parameter.getName().equals(name)).findFirst().orElse(null);
+    }
+
+    @Override
+    public ParsedParameter<Double> getDoubleParameter(String name) {
+        return doubleParameters.stream().filter(parameter -> parameter.getName().equals(name)).findFirst().orElse(null);
+    }
+
+    @Override
     public String getName() {
         return name;
     }
@@ -123,6 +131,8 @@ public class InternalSubcommand implements Subcommand, ParsedSubcommand {
         booleanParameters.forEach(parameter -> result.booleanParameters.add(parameter.copy()));
         integerParameters.forEach(parameter -> result.integerParameters.add(parameter.copy()));
         stringParameters.forEach(parameter -> result.stringParameters.add(parameter.copy()));
+        pathParameters.forEach(parameter -> result.pathParameters.add(parameter.copy()));
+        doubleParameters.forEach(parameter -> result.doubleParameters.add(parameter.copy()));
         return result;
     }
 
