@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 19.10.24, 23:58.
- * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 29.04.25, 07:03.
+ * Copyright (c) 2013-2025 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -260,7 +260,7 @@ public class SimpleCommandLineParserTest {
         List<String> reference = new LinkedList<>();
         reference.add("Error: Parameter 'wrong' has no valid format");
         reference.add("");
-        reference.add("Usage: commandname subcommandname --parametername1 <value>");
+        reference.add("Usage: java -jar commandname subcommandname --parametername1 <value>");
         reference.add("          --parametername3 <value> [--parametername2 <value>]");
         reference.add("");
         reference.add("subcommanddescription");
@@ -356,7 +356,7 @@ public class SimpleCommandLineParserTest {
         commandLine.setCommand(command);
 
         List<String> reference = new LinkedList<>();
-        reference.add("Usage: commandname <subcommand> [<args>]");
+        reference.add("Usage: java -jar commandname <subcommand> [<args>]");
         reference.add("");
         reference.add("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod");
         reference.add("tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At");

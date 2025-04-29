@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 20.10.24, 17:49.
- * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 28.04.25, 22:13.
+ * Copyright (c) 2013-2025 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -140,7 +140,7 @@ public class Menu {
         StringBuilder result = new StringBuilder();
 
         List<String> parts = new LinkedList<>();
-        parts.add("Usage:");
+        parts.add("Usage: java -jar");
         parts.addAll(strings);
 
         result.append(printIntendedBlock(parts, 10));
