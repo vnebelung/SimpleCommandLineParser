@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!--
-  ~ This file is part of ProDisFuzz, modified on 03.11.24, 20:44.
-  ~ Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
+  ~ This file is part of ProDisFuzz, modified on 29.04.25, 07:25.
+  ~ Copyright (c) 2013-2025 Volker Nebelung <vnebelung@prodisfuzz.net>
   ~ This work is free. You can redistribute it and/or modify it under the
   ~ terms of the Do What The Fuck You Want To Public License, Version 2,
   ~ as published by Sam Hocevar. See the COPYING file for more details.
@@ -11,14 +11,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.prodisfuzz</groupId>
     <artifactId>simple-command-line-parser</artifactId>
-    <version>17</version>
+    <version>18</version>
     <packaging>jar</packaging>
     <name>SimpleCommandLineParser</name>
     <dependencies>
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>7.10.2</version>
+            <version>7.11.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -44,7 +44,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>3.11.2</version>
                 <configuration>
                     <additionalOptions>-html5</additionalOptions>
                 </configuration>
@@ -60,7 +60,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>3.14.0</version>
             </plugin>
         </plugins>
     </build>
