@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 26.10.24, 23:55.
- * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 30.04.25, 20:56.
+ * Copyright (c) 2013-2025 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -49,21 +49,23 @@ public class IntegerParameter extends AbstractParameter<Integer> {
     @Override
     public void setValue(String value) throws ParameterException {
         if (value == null) {
-            throw new ParameterException("The parameter's value must not be null");
+            throw new ParameterException("The parameter '%s's value must not be null", getName());
         }
         if (value.isBlank()) {
-            throw new ParameterException("The parameter's value must not be empty");
+            throw new ParameterException("The parameter '%s's value must not be empty", getName());
         }
         try {
             setCastedValue(Integer.valueOf(value));
         } catch (NumberFormatException ignored) {
-            throw new ParameterException("The parameter's value is not a valid integer");
+            throw new ParameterException("The parameter '%s's value is not a valid integer", getName());
         }
         if (getValue() < minInclusive) {
-            throw new ParameterException("The parameter's value must not be lower than " + minInclusive);
+            throw new ParameterException("The parameter '%s's value must not be lower than %d", getName(),
+                    minInclusive);
         }
         if (getValue() > maxInclusive) {
-            throw new ParameterException("The parameter's value must not be greater than " + maxInclusive);
+            throw new ParameterException("The parameter '%s's value must not be greater than %d", getName(),
+                    maxInclusive);
         }
     }
 

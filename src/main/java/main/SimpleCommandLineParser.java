@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 17.05.21, 23:47.
- * Copyright (c) 2013-2021 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 29.04.25, 20:47.
+ * Copyright (c) 2013-2025 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -172,13 +172,13 @@ public class SimpleCommandLineParser {
      * @throws ParameterException if the given arguments do not contain a subcommand at the first index
      */
     private InternalSubcommand parseSubcommand(List<String> arguments) throws ParameterException {
-        if (arguments.isEmpty() || (arguments.size() == 1 && arguments.get(0).isEmpty())) {
+        if (arguments.isEmpty() || (arguments.size() == 1 && arguments.getFirst().isEmpty())) {
             throw new ParameterException("No subcommand found");
         }
-        String subcommandName = arguments.remove(0);
+        String subcommandName = arguments.removeFirst();
         InternalSubcommand result = command.getSubcommand(subcommandName);
         if (result == null) {
-            throw new ParameterException("Unknown subcommand '%s'", arguments.get(0));
+            throw new ParameterException("Unknown subcommand '%s'", arguments.getFirst());
         }
         return result;
     }

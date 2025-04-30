@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 22.10.24, 20:15.
- * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 30.04.25, 20:35.
+ * Copyright (c) 2013-2025 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -45,14 +45,15 @@ public class StringParameter extends AbstractParameter<String> {
     @Override
     public void setValue(String value) throws ParameterException {
         if (value == null) {
-            throw new ParameterException("The parameter's value must not be null");
+            throw new ParameterException("The parameter '%s's value must not be null", getName());
         }
         if (value.isEmpty()) {
-            throw new ParameterException("The parameter's value must not be empty");
+            throw new ParameterException("The parameter '%s's value must not be empty", getName());
         }
         if (!allowedValues.isEmpty() && !allowedValues.contains(value)) {
             String allowed = "{" + String.join(",", allowedValues) + "}";
-            throw new ParameterException("The parameter's value is not one of the allowed values " + allowed);
+            throw new ParameterException("The parameter '%s's value is not one of the allowed values %s", getName(),
+                    allowed);
         }
         setCastedValue(value);
     }

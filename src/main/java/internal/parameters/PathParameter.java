@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 23.10.24, 21:24.
- * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 30.04.25, 20:55.
+ * Copyright (c) 2013-2025 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -37,17 +37,19 @@ public class PathParameter extends AbstractParameter<Path> {
     @Override
     public void setValue(String value) throws ParameterException {
         if (value == null) {
-            throw new ParameterException("The parameter's value must not be null");
+            throw new ParameterException("The parameter '%s's value must not be null", getName());
         }
         if (value.isEmpty()) {
-            throw new ParameterException("The parameter's value must not be empty");
+            throw new ParameterException("The parameter '%s's value must not be empty", getName());
         }
         Path path = Path.of(value).toAbsolutePath().normalize();
         if (existing && !Files.exists(path)) {
-            throw new ParameterException("The parameter's value must point to an existing file or directory");
+            throw new ParameterException("The parameter '%s's value must point to an existing file or directory",
+                    getName());
         }
         if (!existing && Files.exists(path)) {
-            throw new ParameterException("The parameter's value must point to a non-existing file or directory");
+            throw new ParameterException("The parameter '%s's value must point to a non-existing file or directory",
+                    getName());
         }
         setCastedValue(path);
     }
