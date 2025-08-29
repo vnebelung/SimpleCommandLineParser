@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 31.10.24, 00:33.
- * Copyright (c) 2013-2024 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 29.08.25, 09:25.
+ * Copyright (c) 2013-2025 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
@@ -39,16 +39,16 @@ public class InternalSubcommand implements Subcommand, ParsedSubcommand {
      */
     public InternalSubcommand(String name, String description) {
         if (name == null) {
-            throw new IllegalArgumentException("The subcommand's name must not be null");
+            throw new IllegalArgumentException("Name must not be null");
         }
         if (name.isBlank()) {
-            throw new IllegalArgumentException("The subcommand's name must not be empty");
+            throw new IllegalArgumentException("Name must not be empty");
         }
         if (description == null) {
-            throw new IllegalArgumentException("The subcommand's description must not be empty");
+            throw new IllegalArgumentException("Description must not be empty");
         }
         if (description.isBlank()) {
-            throw new IllegalArgumentException("The subcommand's description must not be empty");
+            throw new IllegalArgumentException("Description must not be empty");
         }
         this.name = name;
         this.description = description;

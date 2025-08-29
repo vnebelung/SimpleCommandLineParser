@@ -1,6 +1,6 @@
 /*
- * This file is part of ProDisFuzz, modified on 23.01.21, 20:39.
- * Copyright (c) 2013-2021 Volker Nebelung <vnebelung@prodisfuzz.net>
+ * This file is part of ProDisFuzz, modified on 23.01.21, 20:41.
+ * Copyright (c) 2013-2025 Volker Nebelung <vnebelung@prodisfuzz.net>
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
  * as published by Sam Hocevar. See the COPYING file for more details.
